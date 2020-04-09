@@ -1,12 +1,15 @@
 package com.NewsMs.service;
 
-import java.util.List;
-
-import com.NewsMs.entity.News;
+import com.NewsMs.entity.Page;
 
 public interface newsService {
-	//获取新闻列表，只含标题和文章id
-	List<News> selectNewsBypage(Integer page, Integer limit);
+	/**
+	 * 获取新闻列表，只含标题和文章id
+	 * @param page 当前页
+	 * @param limit 每页数量
+	 * @return 分页对象
+	 */
+	Page selectNewsBypage(Integer page, Integer limit);
 	
 	
 }
