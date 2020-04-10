@@ -14,7 +14,7 @@ import java.util.List;
  * @author lmz
  * @since 2020-04-10 10:26:33
  */
-public class NewsServiceImpl implements Ne  wsService {
+public class NewsServiceImpl implements NewsService {
     private NewsDao newDao = new NewsDaoImpl();
     @Override
     public Page selectNewsByPage(Integer currPage, Integer limit) {
