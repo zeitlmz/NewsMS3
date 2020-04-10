@@ -39,12 +39,12 @@ public class Page {
     }
 
     public Integer getCount() {
-        return count%limit==0?(count/limit):(count/limit+1);
+        return count;
     }
 
     public void setCount(Integer count) {
         if (count>0) {
-            this.count = count;
+            this.count = count%limit==0?(count/limit):(count/limit+1);
         }
     }
 

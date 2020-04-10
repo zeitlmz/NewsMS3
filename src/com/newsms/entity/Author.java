@@ -7,23 +7,20 @@ package com.newsms.entity;
  * @since 2020-04-10 10:26:33
  */
 @SuppressWarnings("serial")
-public class Author{
-    //新闻发布者账号
-    private String username;
-    //账号的密码
+public class Author {
+
+    private String userName;
     private String pwd;
-    //真实姓名
-    private String realname;
-    //头像路径
-    private String immgurl;
+    private String realName;
+    private String imageUrl;
 
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPwd() {
@@ -34,29 +31,29 @@ public class Author{
         this.pwd = pwd;
     }
 
-    public String getRealname() {
-        return realname;
+    public String getRealName() {
+        return realName;
     }
 
-    public void setRealname(String realname) {
-        this.realname = realname;
+    public void setRealName(String realName) {
+        this.realName = realName;
     }
 
-    public String getImmgurl() {
-        return immgurl;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImmgurl(String immgurl) {
-        this.immgurl = immgurl;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     @Override
     public String toString() {
         return "Author{" +
-                "username='" + username + '\'' +
+                "userName='" + userName + '\'' +
                 ", pwd='" + pwd + '\'' +
-                ", realname='" + realname + '\'' +
-                ", immgurl='" + immgurl + '\'' +
+                ", realName='" + realName + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }
 }

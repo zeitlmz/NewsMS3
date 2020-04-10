@@ -6,34 +6,32 @@ package com.newsms.entity;
  * @author lmz
  * @since 2020-04-10 10:26:33
  */
-public class Topic{
-    //话题id
-    private Integer topicid;
-    //话题名称
-    private String topicname;
+public class Topic {
+    private Integer topicId;
+    private String topicName;
 
 
-    public Integer getTopicid() {
-        return topicid;
+    public Integer getTopicId() {
+        return topicId;
     }
 
-    public void setTopicid(Integer topicid) {
-        this.topicid = topicid;
+    public void setTopicId(Integer topicId) {
+        this.topicId = topicId;
     }
 
-    public String getTopicname() {
-        return topicname;
+    public String getTopicName() {
+        return topicName;
     }
 
-    public void setTopicname(String topicname) {
-        this.topicname = topicname;
+    public void setTopicName(String topicName) {
+        this.topicName = topicName;
     }
 
     @Override
     public String toString() {
         return "Topic{" +
-                "topicid=" + topicid +
-                ", topicname='" + topicname + '\'' +
+                "topicId=" + topicId +
+                ", topicName='" + topicName + '\'' +
                 '}';
     }
 }

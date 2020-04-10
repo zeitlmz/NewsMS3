@@ -1,5 +1,4 @@
 <%@ page import="com.newsms.service.NewsService" %>
-<%@ page import="com.newsms.service.impl.newsServiceImpl" %>
 <%@ page import="com.newsms.entity.Page" %>
 <%@ page import="com.newsms.entity.News" %>
 <%@ page import="java.util.List" %>
@@ -94,7 +93,7 @@
                 <%
                     NewsService newsservice = new NewsServiceImpl();
                     String pageIndex = request.getParameter("pageIndex");
-                    Integer limit = 3;
+                    Integer limit = 5;
                     if (pageIndex == null || Integer.parseInt(pageIndex)<2) {
                         pageIndex = "1";
                     }
@@ -102,10 +101,10 @@
                     if (currPage<2){
                         currPage=1;
                     }
-                    Page pages = newsservice.selectNewsBypage(currPage, limit);
+                    Page pages = newsservice.selectNewsByPage(currPage,limit);
                     List<News> list = pages.getData();
                     for (News news : list) {
-                        out.print("<li><a href>" + news.getNewsTitlie() + "</a><li>");
+                        out.print("<li><a href>" + news.getNewstitle() + "</a><li>");
                     }
                     currPage=pages.getPage();
                 %>

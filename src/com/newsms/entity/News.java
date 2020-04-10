@@ -18,7 +18,7 @@ public class News{
     //发布时间
     private Object publishdate;
     //分类
-    private String newsclass;
+    private Integer topicId;
 
 
     public Long getNewsid() {
@@ -61,12 +61,12 @@ public class News{
         this.publishdate = publishdate;
     }
 
-    public String getNewsclass() {
-        return newsclass;
+    public Integer getTopicId() {
+        return topicId;
     }
 
-    public void setNewsclass(String newsclass) {
-        this.newsclass = newsclass;
+    public void setTopicId(Integer topicId) {
+        this.topicId = topicId;
     }
 
     @Override
@@ -77,7 +77,7 @@ public class News{
                 ", newsauthor='" + newsauthor + '\'' +
                 ", content='" + content + '\'' +
                 ", publishdate=" + publishdate +
-                ", newsclass='" + newsclass + '\'' +
+                ", topicId='" + topicId + '\'' +
                 '}';
     }
 }

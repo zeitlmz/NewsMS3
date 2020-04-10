@@ -14,19 +14,30 @@ import java.util.List;
  * @author lmz
  * @since 2020-04-10 10:26:33
  */
-public class NewsServiceImpl implements NewsService {
-
+public class NewsServiceImpl implements Ne  wsService {
+    private NewsDao newDao = new NewsDaoImpl();
     @Override
-    public Page selectNewsBypage(Integer currPage, Integer limit) {
-        NewsDao newdao = new NewsDaoImpl();
+    public Page selectNewsByPage(Integer currPage, Integer limit) {
         Page pages = new Page();
-        pages.setCount(newdao.selectCount());
+        pages.setLimit(limit);
+        pages.setCount(newDao.selectCount());
         if (currPage>pages.getCount()){
             currPage=pages.getCount();
         }
         pages.setPage(currPage);
-        List<News> news = newdao.selectNewsBypage(currPage, limit);
+        List<News> news = newDao.selectNewsByPage(currPage,limit);
         pages.setData(news);
+        System.out.println("总页数："+pages.getCount());
         return pages;
+    }
+
+    @Override
+    public News selectNewsByNewsId(Integer newsId) {
+        return newDao.selectNewsByNewsId(newsId);
+    }
+
+    @Override
+    public List<News> selectNewsByTopicId(Integer topicId) {
+        return newDao.selectNewsByTopicId(topicId);
     }
 }

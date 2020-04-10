@@ -14,11 +14,25 @@ public interface NewsDao {
      * @param limit 每页数据数量
      * @return list对象
      */
-    List<News> selectNewsBypage(Integer page, Integer limit);
+    List<News> selectNewsByPage(Integer page, Integer limit);
 
     /**
      * 查询数据总条数
      * @return 返回数据总条数
      */
     int selectCount();
+
+    /**
+     *通过newId查询新闻
+     * @param newsId 新闻id
+     * @return 新闻数据对象list集合
+     */
+    News selectNewsByNewsId(Integer newsId);
+
+    /**
+     *通过newId查询新闻
+     * @param topicId 话题id
+     * @return 新闻数据对象list集合
+     */
+    List<News> selectNewsByTopicId(Integer topicId);
 }
