@@ -1,4 +1,4 @@
-package com.NewsMs.entity;
+package com.newsms.entity;
 
 import java.util.List;
 
@@ -23,7 +23,9 @@ public class Page {
     }
 
     public void setPage(Integer page) {
-        this.page = page;
+        if (page>0) {
+            this.page = page;
+        }
     }
 
     public Integer getLimit() {
@@ -31,22 +33,26 @@ public class Page {
     }
 
     public void setLimit(Integer limit) {
-        this.limit = limit;
+        if (limit>0) {
+            this.limit = limit;
+        }
     }
 
     public Integer getCount() {
-        return count;
+        return count%limit==0?(count/limit):(count/limit+1);
     }
 
     public void setCount(Integer count) {
-        this.count = count;
+        if (count>0) {
+            this.count = count;
+        }
     }
 
-    public List<News> getNews() {
+    public List<News> getData() {
         return data;
     }
 
-    public void setNews(List<News> data) {
+    public void setData(List<News> data) {
         this.data = data;
     }
 }

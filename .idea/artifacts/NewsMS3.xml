@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="NewsMS3:war exploded">
-    <output-path>$PROJECT_DIR$/out/artifacts/NewsMS3_war_exploded</output-path>
+  <artifact type="exploded-war" name="NewsMS3">
+    <output-path>$PROJECT_DIR$/out/artifacts/NewsMS3</output-path>
     <root id="root">
       <element id="javaee-facet-resources" facet="NewsMS3/web/Web" />
       <element id="directory" name="WEB-INF">

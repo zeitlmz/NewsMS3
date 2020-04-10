@@ -1,15 +1,18 @@
-package com.NewsMs.dao.impl;
+package com.newsms.dao.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.NewsMs.dao.baseDao;
-import com.NewsMs.dao.newsDao;
-import com.NewsMs.entity.News;
+import com.newsms.dao.NewsDao;
+import com.newsms.dao.baseDao;
+import com.newsms.entity.News;
 
-public class newsDaoimpl extends baseDao implements newsDao {
+/**
+ * @author lmz
+ */
+public class NewsDaoImpl extends baseDao implements NewsDao {
 
 	@Override
 	public List<News> selectNewsBypage(Integer page, Integer limit) {
@@ -21,7 +24,9 @@ public class newsDaoimpl extends baseDao implements newsDao {
 			while (rs.next()) {
 				long newsid = rs.getLong("newsId");
 				String newstitle = rs.getString("newsTitle");
-				News news = new News(newsid, newstitle);
+				News news = new News();
+				news.setNewsid(newsid);
+				news.setNewstitle(newstitle);
 				list.add(news);
 			}
 		} catch (SQLException e) {
@@ -29,6 +34,20 @@ public class newsDaoimpl extends baseDao implements newsDao {
 			e.printStackTrace();
 		}
 		return list;
+	}
+
+	@Override
+	public int selectCount() {
+		String sql="select count(*) from news";
+		ResultSet rs=executeQuery(sql);
+		int count = 0;
+		try {
+			rs.next();
+			count=rs.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return count;
 	}
 
 }
