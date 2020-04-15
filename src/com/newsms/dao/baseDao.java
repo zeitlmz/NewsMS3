@@ -18,9 +18,11 @@ public class baseDao {
     //获取数据库连接
     private Connection getConnnection() {
         try {
-            Context context = new InitialContext();
-            DataSource dataSource = (DataSource) context.lookup("java:comp/env/NewsMS");
-            conn = dataSource.getConnection();
+            if (conn == null) {
+                Context context = new InitialContext();
+                DataSource dataSource = (DataSource) context.lookup("java:comp/env/NewsMS");
+                conn = dataSource.getConnection();
+            }
         } catch (NamingException | SQLException e) {
             e.printStackTrace();
         }

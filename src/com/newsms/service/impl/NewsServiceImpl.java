@@ -16,18 +16,18 @@ import java.util.List;
  */
 public class NewsServiceImpl implements NewsService {
     private NewsDao newDao = new NewsDaoImpl();
+
     @Override
     public Page selectNewsByPage(Integer currPage, Integer limit) {
         Page pages = new Page();
         pages.setLimit(limit);
         pages.setCount(newDao.selectCount());
-        if (currPage>pages.getCount()){
-            currPage=pages.getCount();
+        if (currPage > pages.getCount()) {
+            currPage = pages.getCount();
         }
         pages.setPage(currPage);
-        List<News> news = newDao.selectNewsByPage(currPage,limit);
+        List<News> news = newDao.selectNewsByPage((currPage - 1) * limit, limit);
         pages.setData(news);
-        System.out.println("总页数："+pages.getCount());
         return pages;
     }
 
@@ -39,5 +39,27 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public List<News> selectNewsByTopicId(Integer topicId) {
         return newDao.selectNewsByTopicId(topicId);
+    }
+
+    /**
+     * 通过分页信息和作者查询新闻
+     *
+     * @param currPage       当前页
+     * @param limit      每页数据条数
+     * @param newsAuthor 作者
+     * @return 新闻列表
+     */
+    @Override
+    public Page selectNewsByRealName(Integer currPage, Integer limit, String newsAuthor) {
+        Page pages = new Page();
+        pages.setLimit(limit);
+        pages.setCount(newDao.selectCountByNewsAuthor(newsAuthor));
+        if (currPage > pages.getCount()) {
+            currPage = pages.getCount();
+        }
+        pages.setPage(currPage);
+        List<News> list = newDao.selectNewsByRealName((currPage - 1) * limit, limit, newsAuthor);
+        pages.setData(list);
+        return pages;
     }
 }

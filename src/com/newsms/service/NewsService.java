@@ -14,24 +14,37 @@ import java.util.List;
  */
 public interface NewsService {
     /**
-     *通过分页信息查询新闻数据
+     * 通过分页信息查询新闻数据
+     *
      * @param currPage 当前页面
-     * @param limit 每页的数据数量
+     * @param limit    每页的数据数量
      * @return 分页对象
      */
-    Page selectNewsByPage(Integer currPage,Integer limit);
+    Page selectNewsByPage(Integer currPage, Integer limit);
 
     /**
-     *通过新闻编号获取新闻数据
+     * 通过新闻编号获取新闻数据
+     *
      * @param newsId 新闻编号
      * @return 一个新闻对象
      */
     News selectNewsByNewsId(Integer newsId);
 
     /**
-     *通过话题编号获取新闻数据集合
+     * 通过话题编号获取新闻数据集合
+     *
      * @param topicId 新闻编号
      * @return 新闻对象List集合
      */
     List<News> selectNewsByTopicId(Integer topicId);
+
+    /**
+     * 通过分页信息和作者查询新闻
+     *
+     * @param page       当前页
+     * @param limit      每页数据条数
+     * @param newsAuthor 作者
+     * @return 新闻列表
+     */
+    Page selectNewsByRealName(Integer page, Integer limit, String newsAuthor);
 }
