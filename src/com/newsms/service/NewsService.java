@@ -5,6 +5,7 @@ import com.newsms.entity.News;
 import com.newsms.entity.Page;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * (News)表服务接口
@@ -47,4 +48,11 @@ public interface NewsService {
      * @return 新闻列表
      */
     Page selectNewsByRealName(Integer page, Integer limit, String newsAuthor);
+
+    /**
+     * 根据分页条件和条件查询新闻
+     * @param map 条件集合
+     * @return 分页数据对象
+     */
+    Page searchNews(Map<String, Object> map);
 }

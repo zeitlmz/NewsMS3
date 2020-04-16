@@ -1,5 +1,7 @@
 package com.newsms.service.impl;
 
+import java.util.HashMap;
+
 import com.newsms.dao.NewsDao;
 import com.newsms.dao.impl.NewsDaoImpl;
 import com.newsms.entity.News;
@@ -7,6 +9,7 @@ import com.newsms.entity.Page;
 import com.newsms.service.NewsService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * (News)表服务实现类
@@ -44,7 +47,7 @@ public class NewsServiceImpl implements NewsService {
     /**
      * 通过分页信息和作者查询新闻
      *
-     * @param currPage       当前页
+     * @param currPage   当前页
      * @param limit      每页数据条数
      * @param newsAuthor 作者
      * @return 新闻列表
@@ -59,6 +62,32 @@ public class NewsServiceImpl implements NewsService {
         }
         pages.setPage(currPage);
         List<News> list = newDao.selectNewsByRealName((currPage - 1) * limit, limit, newsAuthor);
+        pages.setData(list);
+        return pages;
+    }
+
+    @Override
+    public Page searchNews(Map<String, Object> map) {
+        System.out.println("当前页："+map.get("page"));
+        Page pages = new Page();
+        pages.setLimit((Integer) map.get("limit"));
+        Map<String, Object> map1 = new HashMap<>();
+        for (String key : map.keySet()) {
+            map1.put(key, map.get(key));
+        }
+        System.out.println("------------\n业务实现层用于查询总数据条数的map1::"+map1);
+        map1.remove("page");
+        map1.remove("limit");
+        pages.setCount(newDao.selectCountBySearch(map1));
+        System.out.println("------------\n业务实现层查询出的总数据条数："+newDao.selectCountBySearch(map1));
+        System.out.println("------------\n业务实现层查询出的总页数："+pages.getCount());
+        if ((Integer) map.get("page") > pages.getCount()) {
+            map.put("page", ((pages.getCount()-1)* (Integer) map.get("limit")));
+        }
+        map.put("page",((Integer)map.get("page") - 1) * (Integer) map.get("limit"));
+        pages.setPage((Integer) map.get("page"));
+        System.out.println("------------\n到了业务实现层="+map);
+        List<News> list = newDao.selectNewsBySearch(map);
         pages.setData(list);
         return pages;
     }

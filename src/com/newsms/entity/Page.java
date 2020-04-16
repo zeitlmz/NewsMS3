@@ -6,7 +6,26 @@ public class Page {
     private Integer page;
     private Integer limit;
     private Integer count;
+    private Object[] params;
+    private Boolean isPrevious;
+    private Boolean isNext;
     private List<News> data;
+
+    public Object[] getParams() {
+        return params;
+    }
+
+    public void setParams(Object[] params) {
+        this.params = params;
+    }
+
+    public Boolean getPrevious() {
+        return getPage() > 1;
+    }
+
+    public Boolean getNext() {
+        return getPage() < getCount();
+    }
 
     public Page() {
     }
@@ -23,7 +42,7 @@ public class Page {
     }
 
     public void setPage(Integer page) {
-        if (page>0) {
+        if (page > 0) {
             this.page = page;
         }
     }
@@ -33,7 +52,7 @@ public class Page {
     }
 
     public void setLimit(Integer limit) {
-        if (limit>0) {
+        if (limit > 0) {
             this.limit = limit;
         }
     }
@@ -43,8 +62,10 @@ public class Page {
     }
 
     public void setCount(Integer count) {
-        if (count>0) {
-            this.count = count%limit==0?(count/limit):(count/limit+1);
+        if (count > 0) {
+            this.count = count % limit == 0 ? (count / limit) : (count / limit + 1);
+        }else {
+            this.count = 0;
         }
     }
 

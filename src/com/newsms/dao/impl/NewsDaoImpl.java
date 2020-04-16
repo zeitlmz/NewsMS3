@@ -1,11 +1,12 @@
 package com.newsms.dao.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import java.sql.ResultSet;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Map;
 
 import com.newsms.dao.NewsDao;
 import com.newsms.dao.baseDao;
@@ -98,10 +99,10 @@ public class NewsDaoImpl extends baseDao implements NewsDao {
     }
 
     @Override
-    public List<News> selectNewsByRealName(Integer page,Integer limit,String newsAuthor) {
+    public List<News> selectNewsByRealName(Integer page, Integer limit, String newsAuthor) {
         String sql = "select * from news where newsAuthor=? limit ?,?";
-        Object[] args={newsAuthor,page,limit};
-        ResultSet rs = executeQuery(sql,args);
+        Object[] args = {newsAuthor, page, limit};
+        ResultSet rs = executeQuery(sql, args);
         List<News> list = new ArrayList<>();
         try {
             while (rs.next()) {
@@ -125,7 +126,7 @@ public class NewsDaoImpl extends baseDao implements NewsDao {
     @Override
     public int selectCountByNewsAuthor(String newsAuthor) {
         String sql = "select count(*) from news where newsAuthor=?";
-        ResultSet rs = executeQuery(sql,newsAuthor);
+        ResultSet rs = executeQuery(sql, newsAuthor);
         int count = 0;
         try {
             rs.next();
@@ -136,6 +137,135 @@ public class NewsDaoImpl extends baseDao implements NewsDao {
             closeAll();
         }
         return count;
+    }
+
+    @Override
+    public Integer selectCountBySearch(Map<String, Object> map1) {
+        StringBuffer sb = new StringBuffer();
+        Integer count = 0;
+        ResultSet rs = null;
+        Integer size = map1.size();
+        if (size == 0) {
+            String sql = "select count(*) from news";
+            rs = executeQuery(sql);
+            try {
+                while (rs.next()) {
+                    count = rs.getInt(1);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            sb.append("select count(*) from news s");
+            List list = new ArrayList();
+            for (String key : map1.keySet()) {
+                list.add(map1.get(key));
+                size--;
+                if (size == 0) {
+                    switch (key) {
+                        case "newsTitle":
+                        case "newsAuthor":
+                        case "content":
+                        case "publishDate":
+                            sb.append(" " + key + " like '%" + map1.get(key) + "%'");
+                            break;
+                        default:
+                        case "topicId":
+                            sb.append(" join topic t on s.topicId=t.topicId where topicId=" + map1.get("topicId"));
+
+                            break;
+                    }
+                } else {
+                    switch (key) {
+                        case "newsTitle":
+                        case "newsAuthor":
+                        case "publishDate":
+                        case "content":
+                            sb.append(" " + key + " like '%" + map1.get(key) + "%' and");
+                            break;
+                        default:
+                            sb.append(" join topic t on s.topicId=t.topicId where topicId=" + map1.get("topicId") + " and");
+                            break;
+                    }
+                }
+            }
+        }
+        System.out.println("查询数据总条数拼接的sql--->>>" + sb);
+        rs = executeQuery(String.valueOf(sb));
+        try {
+            while (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    @Override
+    public List<News> selectNewsBySearch(Map<String, Object> map) {
+        System.out.println(map);
+        StringBuffer sb = new StringBuffer();
+        List<News> newsList = new ArrayList<>();
+        Integer size = map.size();
+        ResultSet rs = null;
+        if (size == 2) {
+            String sql = "select newsId,newsTitle,publishDate from news order by publishDate desc limit ?,? ";
+            Object[] params = {map.get("page"), map.get("limit")};
+            System.out.println("Object[]");
+            for (Object param : params) {
+                System.out.println(param);
+            }
+            System.out.println("--------------------");
+            rs = executeQuery(sql, params);
+            try {
+                while (rs.next()) {
+                    News news = new News();
+                    news.setNewsid(rs.getLong("newsId"));
+                    news.setNewstitle(rs.getString("newsTitle"));
+                    news.setPublishdate(rs.getDate("publishDate"));
+                    newsList.add(news);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            sb.append("select newsId,newsTitle,publishDate from news where 1=1");
+            for (String key : map.keySet()) {
+                size--;
+                if (size == 1) {
+                    System.out.println("limit拼接了");
+                    sb.append(" order by publishDate desc limit " + map.get("page") + ",");
+                } else if (size == 0) {
+                    System.out.println("page拼接了");
+                    sb.append(map.get("limit"));
+                } else {
+                    switch (key) {
+                        case "newsTitle":
+                        case "newsAuthor":
+                        case "content":
+                        default:
+                            System.out.println("中间-》 " + key + " 《-条件拼接了");
+                            sb.append(" and " + key + " like '%" + map.get(key) + "%'");
+                            break;
+                    }
+                }
+            }
+            System.out.println("生成的sql:--》 " + sb);
+            rs = super.executeQuery(String.valueOf(sb));
+            try {
+                while (rs.next()) {
+                    News news = new News();
+                    news.setNewsid(rs.getLong("newsId"));
+                    news.setNewstitle(rs.getString("newsTitle"));
+                    news.setPublishdate(rs.getDate("publishDate"));
+                    newsList.add(news);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return newsList;
     }
 
 }

@@ -1,5 +1,6 @@
 <%@ page import="com.newsms.entity.Author" %>
 <%@ page import="com.newsms.entity.Page" %>
+<%@ page import="com.newsms.entity.Topic" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <!DOCTYPE html>
@@ -69,7 +70,7 @@
         <div class="class_type"><img src="images/class_type.gif" alt="新闻中心"/></div>
         <div class="content">
             <h1 id="opt_type"> 搜索新闻 </h1>
-            <form action="index.jsp">
+            <form action="doPage.jsp" method="post">
                 <table>
                     <tr>
                         <td><label>新闻标题</label></td>
@@ -86,7 +87,17 @@
                     </tr>
                     <tr>
                         <td><label>主题</label></td>
-                        <td><input type="text" name="topicId"></td>
+                        <td>
+                            <select name="topicId">
+                                <option value="">全部</option>
+                                <%
+                                    List<Topic> topics = topicService.selectTopicList();
+                                    for (Topic topic : topics) {
+                                        out.print("<option value='" + topic.getTopicId() + "'>" + topic.getTopicName() + "</option>");
+                                    }
+                                %>
+                            </select>
+                        </td>
                         <td><label></label></td>
                         <td><input type="submit" value="搜索"></td>
                     </tr>
@@ -95,29 +106,22 @@
             <h1 id="opt_type"> 新闻列表 </h1>
             <ul class="classlist">
                 <%
-                    String pageIndex = request.getParameter("pageIndex");
-                    Integer limit = 5;
-                    if (pageIndex == null || Integer.parseInt(pageIndex) < 2) {
-                        pageIndex = "1";
+                    Page pages = (Page) session.getAttribute("pages");
+                    if (pages == null) {
+                        pages = newsservice.selectNewsByPage(1, 5);
                     }
-                    Integer currPage = Integer.valueOf(pageIndex);
-                    if (currPage < 2) {
-                        currPage = 1;
-                    }
-                    Page pages = newsservice.selectNewsByPage(currPage, limit);
                     List<News> list = pages.getData();
                     for (News news : list) {
                         out.print("<li style='width:100%'><div style='width:400px;display:inline-block'><a href=\"news_read.jsp?newsId=" + news.getNewsid() + "\">" + news.getNewstitle() + "</a></div>" + news.getPublishdate() + "<li>");
                     }
-                    currPage = pages.getPage();
                 %>
             </ul>
 
             当前页数:[<%=pages.getPage()%>/<%=pages.getCount()%>]&nbsp;
-            <a href="index.jsp?pageIndex=1">首页&nbsp;&nbsp;</a>
-            <a href="index.jsp?pageIndex=<%=currPage-1%>">上一页&nbsp;&nbsp;</a>
-            <a href="index.jsp?pageIndex=<%=currPage+1%>">下一页&nbsp;&nbsp;</a>
-            <a href="index.jsp?pageIndex=<%=pages.getCount()%>">末页</a> </p>
+            <a href="doPage.jsp?pageIndex=1">首页&nbsp;&nbsp;</a>
+            <a href="doPage.jsp?pageIndex=<%=pages.getPage()-1%>">上一页&nbsp;&nbsp;</a>
+            <a href="doPage.jsp?pageIndex=<%=pages.getPage()+1%>">下一页&nbsp;&nbsp;</a>
+            <a href="doPage.jsp?pageIndex=<%=pages.getCount()%>">末页</a> </p>
         </div>
         <div class="picnews">
             <ul>

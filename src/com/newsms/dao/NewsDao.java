@@ -3,6 +3,7 @@ package com.newsms.dao;
 import com.newsms.entity.News;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author lmz
@@ -58,4 +59,17 @@ public interface NewsDao {
      */
     int selectCountByNewsAuthor(String newsAuthor);
 
+    /**
+     * 通过查询条件得到数据总条数
+     * @param map1 查询条件集合
+     * @return 数据总条数
+     */
+    Integer selectCountBySearch(Map<String, Object> map1);
+
+    /**
+     * 通过分页和查询条件得到数据总条数
+     * @param map 查询条件集合
+     * @return 新闻数据集合
+     */
+    List<News> selectNewsBySearch(Map<String, Object> map);
 }
