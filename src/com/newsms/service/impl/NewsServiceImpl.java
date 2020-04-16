@@ -68,7 +68,6 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public Page searchNews(Map<String, Object> map) {
-        System.out.println("当前页：" + map.get("page"));
         Page pages = new Page();
         pages.setLimit((Integer) map.get("limit"));
         Map<String, Object> map1 = new HashMap<>();
@@ -79,8 +78,6 @@ public class NewsServiceImpl implements NewsService {
         map1.remove("limit");
         Integer count = newDao.selectCountBySearch(map1);
         pages.setCount(count);
-        System.out.println("------------------------\n业务实现层查询出的总数据条数：" + count);
-        System.out.println("\n业务实现层查询出的总页数：" + pages.getCount());
         if ((Integer) map.get("page") > pages.getCount()) {
             map.put("page", pages.getCount());
         } else if ((Integer) map.get("page") < 1) {

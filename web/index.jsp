@@ -70,7 +70,7 @@
         <div class="class_type"><img src="images/class_type.gif" alt="新闻中心"/></div>
         <div class="content">
             <h1 id="opt_type"> 搜索新闻 </h1>
-            <form action="doPage.jsp" method="post">
+            <form action="doSearch.jsp" method="get">
                 <table>
                     <tr>
                         <td><label>新闻标题</label></td>
@@ -108,7 +108,7 @@
                 <%
                     Page pages = (Page) session.getAttribute("pages");
                     if (pages == null) {
-                        pages = newsservice.selectNewsByPage(1, 5);
+                        pages = newsservice.selectNewsByPage(1, 10);
                     }
                     List<News> list = pages.getData();
                     for (News news : list) {

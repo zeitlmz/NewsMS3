@@ -57,8 +57,8 @@
             <script>
                 $(function () {
                     var url = window.location.href;
-                    var limit = window.location.href.split("limit=")[1];
-                    var page = window.location.href.split("page=")[1].split("&limit=")[0];
+                    var limit = parseInt(window.location.href.split("limit=")[1]);
+                    var page = parseInt(window.location.href.split("page=")[1].split("&limit=")[0]);
                     if (page == null || page < 2) {
                         page = 1;
                     }
@@ -69,43 +69,30 @@
                     $("#limit").change(function () {
                         location.href = "admin.jsp?page=1&limit=" + $(this).val();
                     });
-                    if (page <<%=pages.getCount()%>) {
+                    if (page ===<%=pages.getCount()%>) {
                         $("#fristPage").hide();
                         $("#previousPage").hide();
                         $("#nextPage").show();
                         $("#lastPage").show();
-                        $("#nextPage").click(function () {
-                            if (page =<%=pages.getCount()%>) {
-                                location.href = "admin.jsp?page=" + page + "&limit=" + limit;
-                            } else {
-                                location.href = "admin.jsp?page=" + (page + 1) + "&limit=" + limit;
-                            }
-                        });
-                        $("#lastPage").click(function () {
-                            location.href = "admin.jsp?page=<%=pages.getCount()%>&limit=" + limit;
-                        });
-                    } else if (page > 1) {
+                    } else if (page === 1) {
                         $("#fristPage").show();
                         $("#previousPage").show();
                         $("#nextPage").hide();
                         $("#lastPage").hide();
-                        $("#fristPage").click(function () {
-                            location.href = "admin.jsp?page=1&limit=" + limit;
-                        });
-                        $("#previousPage").click(function () {
-                            if (page = 1) {
-                                location.href = "admin.jsp?page=" + page + "&limit=" + limit;
-                            } else {
-                                location.href = "admin.jsp?page=" + (page - 1) + "&limit=" + limit;
-                            }
-                        });
-
-                    } else {
-                        $("#fristPage").hide();
-                        $("#previousPage").hide();
-                        $("#nextPage").hide();
-                        $("#lastPage").hide();
                     }
+                    $("#nextPage").click(function () {
+                        location.href = "admin.jsp?page=" + (page + 1) + "&limit=" + limit;
+                    });
+                    $("#lastPage").click(function () {
+                        location.href = "admin.jsp?page=<%=pages.getCount()%>&limit=" + limit;
+                    });
+
+                    $("#fristPage").click(function () {
+                        location.href = "admin.jsp?page=1&limit=" + limit;
+                    });
+                    $("#previousPage").click(function () {
+                        location.href = "admin.jsp?page=" + (page - 1) + "&limit=" + limit;
+                    });
                 })
             </script>
             <p>当前页数:[<%=currPage%>/<%=pages.getCount()%>]&nbsp;
