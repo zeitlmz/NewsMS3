@@ -68,25 +68,26 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public Page searchNews(Map<String, Object> map) {
-        System.out.println("当前页："+map.get("page"));
+        System.out.println("当前页：" + map.get("page"));
         Page pages = new Page();
         pages.setLimit((Integer) map.get("limit"));
         Map<String, Object> map1 = new HashMap<>();
         for (String key : map.keySet()) {
             map1.put(key, map.get(key));
         }
-        System.out.println("------------\n业务实现层用于查询总数据条数的map1::"+map1);
         map1.remove("page");
         map1.remove("limit");
-        pages.setCount(newDao.selectCountBySearch(map1));
-        System.out.println("------------\n业务实现层查询出的总数据条数："+newDao.selectCountBySearch(map1));
-        System.out.println("------------\n业务实现层查询出的总页数："+pages.getCount());
+        Integer count = newDao.selectCountBySearch(map1);
+        pages.setCount(count);
+        System.out.println("------------------------\n业务实现层查询出的总数据条数：" + count);
+        System.out.println("\n业务实现层查询出的总页数：" + pages.getCount());
         if ((Integer) map.get("page") > pages.getCount()) {
-            map.put("page", ((pages.getCount()-1)* (Integer) map.get("limit")));
+            map.put("page", pages.getCount());
+        } else if ((Integer) map.get("page") < 1) {
+            map.put("page", 1);
         }
-        map.put("page",((Integer)map.get("page") - 1) * (Integer) map.get("limit"));
         pages.setPage((Integer) map.get("page"));
-        System.out.println("------------\n到了业务实现层="+map);
+        map.put("page", ((Integer) map.get("page") - 1) * (Integer) map.get("limit"));
         List<News> list = newDao.selectNewsBySearch(map);
         pages.setData(list);
         return pages;

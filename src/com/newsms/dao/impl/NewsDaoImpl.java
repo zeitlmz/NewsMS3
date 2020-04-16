@@ -155,49 +155,49 @@ public class NewsDaoImpl extends baseDao implements NewsDao {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+            System.out.println("总数量查询生成的sql---》》" + sql);
         } else {
-            sb.append("select count(*) from news s");
+            sb.append("select count(*) from news");
             List list = new ArrayList();
             for (String key : map1.keySet()) {
                 list.add(map1.get(key));
                 size--;
-                if (size == 0) {
+                if (size == map1.size() - 1) {
                     switch (key) {
                         case "newsTitle":
                         case "newsAuthor":
-                        case "content":
                         case "publishDate":
-                            sb.append(" " + key + " like '%" + map1.get(key) + "%'");
+                        case "content":
+                            sb.append(" where " + key + " like '%" + map1.get(key) + "%'");
                             break;
                         default:
-                        case "topicId":
-                            sb.append(" join topic t on s.topicId=t.topicId where topicId=" + map1.get("topicId"));
-
+                            sb.append(" join topic t on news.topicId=t.topicId where t.topicId=" + map1.get("topicId"));
                             break;
                     }
                 } else {
                     switch (key) {
                         case "newsTitle":
                         case "newsAuthor":
-                        case "publishDate":
                         case "content":
-                            sb.append(" " + key + " like '%" + map1.get(key) + "%' and");
+                        case "publishDate":
+                            sb.append(" and " + key + " like '%" + map1.get(key) + "%' ");
                             break;
                         default:
-                            sb.append(" join topic t on s.topicId=t.topicId where topicId=" + map1.get("topicId") + " and");
+                        case "topicId":
+                            sb.append(" join topic t on news.topicId=t.topicId where t.topicId=" + map1.get("topicId"));
                             break;
                     }
                 }
             }
-        }
-        System.out.println("查询数据总条数拼接的sql--->>>" + sb);
-        rs = executeQuery(String.valueOf(sb));
-        try {
-            while (rs.next()) {
-                count = rs.getInt(1);
+            System.out.println("总数量查询生成的sql---》》" + sb);
+            rs = executeQuery(String.valueOf(sb));
+            try {
+                while (rs.next()) {
+                    count = rs.getInt(1);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return count;
     }
@@ -212,11 +212,6 @@ public class NewsDaoImpl extends baseDao implements NewsDao {
         if (size == 2) {
             String sql = "select newsId,newsTitle,publishDate from news order by publishDate desc limit ?,? ";
             Object[] params = {map.get("page"), map.get("limit")};
-            System.out.println("Object[]");
-            for (Object param : params) {
-                System.out.println(param);
-            }
-            System.out.println("--------------------");
             rs = executeQuery(sql, params);
             try {
                 while (rs.next()) {
@@ -229,29 +224,45 @@ public class NewsDaoImpl extends baseDao implements NewsDao {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+            System.out.println("条件查询生成的sql---》》" + sql);
         } else {
-            sb.append("select newsId,newsTitle,publishDate from news where 1=1");
+            sb.append("select newsId,newsTitle,publishDate from news");
             for (String key : map.keySet()) {
                 size--;
-                if (size == 1) {
-                    System.out.println("limit拼接了");
-                    sb.append(" order by publishDate desc limit " + map.get("page") + ",");
-                } else if (size == 0) {
-                    System.out.println("page拼接了");
-                    sb.append(map.get("limit"));
+                if (size == map.size() - 1) {
+                    switch (key) {
+                        case "newsTitle":
+                        case "newsAuthor":
+                        case "content":
+                        case "publishDate":
+                            sb.append(" where " + key + " like '%" + map.get(key) + "%'");
+                            break;
+                        case "topicId":
+                            sb.append(" join topic t on news.topicId=t.topicId where t.topicId=" + map.get("topicId"));
+                            break;
+                        default:
+                            break;
+                    }
                 } else {
                     switch (key) {
                         case "newsTitle":
                         case "newsAuthor":
                         case "content":
-                        default:
+                        case "publishDate":
                             System.out.println("中间-》 " + key + " 《-条件拼接了");
                             sb.append(" and " + key + " like '%" + map.get(key) + "%'");
+                            break;
+                        case "topicId":
+                            System.out.println("多表联查topicId-》 " + key + " 《-条件拼接了");
+                            sb.append(" join topic t on news.topicId=t.topicId where t.topicId=" + map.get("topicId"));
+                            break;
+                        default:
                             break;
                     }
                 }
             }
-            System.out.println("生成的sql:--》 " + sb);
+            sb.append(" order by publishDate desc limit " + map.get("page") + "," + map.get("limit"));
+            System.out.println("条件查询生成的sql---》》" + sb);
             rs = super.executeQuery(String.valueOf(sb));
             try {
                 while (rs.next()) {

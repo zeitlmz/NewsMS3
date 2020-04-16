@@ -46,8 +46,10 @@
     }
     map.put("limit", limit);
     map.put("page", currPage);
-    System.out.println("doPage:"+map);
-    Page pages = newsservice.searchNews(map);
+    session.setAttribute("searchInfo",map);
+    Map<String,Object> map1= (Map<String, Object>) session.getAttribute("searchInfo");
+    Page pages = newsservice.searchNews(map1);
+    System.out.println("doPage:page"+pages);
     session.setAttribute("pages", pages);
     response.sendRedirect("index.jsp");
 %>

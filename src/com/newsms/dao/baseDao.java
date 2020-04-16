@@ -49,11 +49,6 @@ public class baseDao {
     }
 
     public ResultSet executeQuery(String sql, Object... args) {
-        System.out.println("baseDao接收到的Parmas");
-        for (Object arg : args) {
-            System.out.println(arg);
-        }
-        System.out.println("----------------------");
         try {
             conn = getConnnection();
             pstmt = conn.prepareStatement(sql);
