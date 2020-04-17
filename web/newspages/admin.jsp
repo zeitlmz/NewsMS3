@@ -70,15 +70,15 @@
                         location.href = "admin.jsp?page=1&limit=" + $(this).val();
                     });
                     if (page ===<%=pages.getCount()%>) {
-                        $("#fristPage").hide();
-                        $("#previousPage").hide();
-                        $("#nextPage").show();
-                        $("#lastPage").show();
-                    } else if (page === 1) {
                         $("#fristPage").show();
                         $("#previousPage").show();
                         $("#nextPage").hide();
                         $("#lastPage").hide();
+                    } else if (page === 1) {
+                        $("#fristPage").hide();
+                        $("#previousPage").hide();
+                        $("#nextPage").show();
+                        $("#lastPage").show();
                     }
                     $("#nextPage").click(function () {
                         location.href = "admin.jsp?page=" + (page + 1) + "&limit=" + limit;

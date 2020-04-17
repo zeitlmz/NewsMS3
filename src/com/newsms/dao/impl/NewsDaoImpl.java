@@ -1,5 +1,7 @@
 package com.newsms.dao.impl;
 
+import java.sql.Timestamp;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +13,8 @@ import java.util.Map;
 import com.newsms.dao.NewsDao;
 import com.newsms.dao.baseDao;
 import com.newsms.entity.News;
+
+import static com.newsms.util.dateForamte.dateToString;
 
 /**
  * @author lmz
@@ -27,11 +31,11 @@ public class NewsDaoImpl extends baseDao implements NewsDao {
             while (rs.next()) {
                 long newsId = rs.getLong("newsId");
                 String newsTitle = rs.getString("newsTitle");
-                String publishDate = rs.getString("publishDate");
+                Timestamp publishDate = rs.getTimestamp("publishDate");
                 News news = new News();
                 news.setNewsid(newsId);
                 news.setNewstitle(newsTitle);
-                news.setPublishdate(publishDate);
+                news.setPublishdate(dateToString(publishDate));
                 list.add(news);
             }
         } catch (SQLException e) {
@@ -218,7 +222,7 @@ public class NewsDaoImpl extends baseDao implements NewsDao {
                     News news = new News();
                     news.setNewsid(rs.getLong("newsId"));
                     news.setNewstitle(rs.getString("newsTitle"));
-                    news.setPublishdate(rs.getDate("publishDate"));
+                    news.setPublishdate(dateToString(rs.getDate("publishDate")));
                     newsList.add(news);
                 }
             } catch (SQLException e) {
@@ -279,4 +283,15 @@ public class NewsDaoImpl extends baseDao implements NewsDao {
         return newsList;
     }
 
+    @Override
+    public Integer updateNews(News news) {
+        String sql = "update news\n" +
+                "set newsTitle=?,\n" +
+                "    newsAuthor=?,\n" +
+                "    content=?,\n" +
+                "    topicId=?\n" +
+                "   where newsId=?;";
+        Object[] params = {news.getNewstitle(), news.getNewsauthor(), news.getContent(), news.getTopicId(), news.getNewsid()};
+        return executeUpdate(sql, params);
+    }
 }

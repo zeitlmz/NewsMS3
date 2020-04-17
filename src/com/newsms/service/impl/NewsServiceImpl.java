@@ -18,30 +18,30 @@ import java.util.Map;
  * @since 2020-04-10 10:26:33
  */
 public class NewsServiceImpl implements NewsService {
-    private NewsDao newDao = new NewsDaoImpl();
+    private NewsDao newsDao = new NewsDaoImpl();
 
     @Override
     public Page selectNewsByPage(Integer currPage, Integer limit) {
         Page pages = new Page();
         pages.setLimit(limit);
-        pages.setCount(newDao.selectCount());
+        pages.setCount(newsDao.selectCount());
         if (currPage > pages.getCount()) {
             currPage = pages.getCount();
         }
         pages.setPage(currPage);
-        List<News> news = newDao.selectNewsByPage((currPage - 1) * limit, limit);
+        List<News> news = newsDao.selectNewsByPage((currPage - 1) * limit, limit);
         pages.setData(news);
         return pages;
     }
 
     @Override
     public News selectNewsByNewsId(Integer newsId) {
-        return newDao.selectNewsByNewsId(newsId);
+        return newsDao.selectNewsByNewsId(newsId);
     }
 
     @Override
     public List<News> selectNewsByTopicId(Integer topicId) {
-        return newDao.selectNewsByTopicId(topicId);
+        return newsDao.selectNewsByTopicId(topicId);
     }
 
     /**
@@ -56,12 +56,12 @@ public class NewsServiceImpl implements NewsService {
     public Page selectNewsByRealName(Integer currPage, Integer limit, String newsAuthor) {
         Page pages = new Page();
         pages.setLimit(limit);
-        pages.setCount(newDao.selectCountByNewsAuthor(newsAuthor));
+        pages.setCount(newsDao.selectCountByNewsAuthor(newsAuthor));
         if (currPage > pages.getCount()) {
             currPage = pages.getCount();
         }
         pages.setPage(currPage);
-        List<News> list = newDao.selectNewsByRealName((currPage - 1) * limit, limit, newsAuthor);
+        List<News> list = newsDao.selectNewsByRealName((currPage - 1) * limit, limit, newsAuthor);
         pages.setData(list);
         return pages;
     }
@@ -76,7 +76,7 @@ public class NewsServiceImpl implements NewsService {
         }
         map1.remove("page");
         map1.remove("limit");
-        Integer count = newDao.selectCountBySearch(map1);
+        Integer count = newsDao.selectCountBySearch(map1);
         pages.setCount(count);
         if ((Integer) map.get("page") > pages.getCount()) {
             map.put("page", pages.getCount());
@@ -85,8 +85,13 @@ public class NewsServiceImpl implements NewsService {
         }
         pages.setPage((Integer) map.get("page"));
         map.put("page", ((Integer) map.get("page") - 1) * (Integer) map.get("limit"));
-        List<News> list = newDao.selectNewsBySearch(map);
+        List<News> list = newsDao.selectNewsBySearch(map);
         pages.setData(list);
         return pages;
+    }
+
+    @Override
+    public boolean updateNews(News news) {
+        return newsDao.updateNews(news)>0;
     }
 }

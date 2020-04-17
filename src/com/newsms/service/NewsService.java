@@ -55,4 +55,6 @@ public interface NewsService {
      * @return 分页数据对象
      */
     Page searchNews(Map<String, Object> map);
+
+    boolean updateNews(News news);
 }

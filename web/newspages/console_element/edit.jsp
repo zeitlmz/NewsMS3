@@ -20,7 +20,7 @@
 <div id="main">
 <div id="opt_list">
     <ul>
-        <li><a href="admin.jsp">新闻管理</a></li>
+        <li><a href="admin.jsp?page=1&limit=5">新闻管理</a></li>
         <li><a href="news_add.jsp">添加新闻</a></li>
         <li><a href="news_modify.jsp">编辑新闻</a></li>
         <li><a href="topic_add.jsp">添加主题</a></li>

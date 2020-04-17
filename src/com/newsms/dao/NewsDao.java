@@ -72,4 +72,6 @@ public interface NewsDao {
      * @return 新闻数据集合
      */
     List<News> selectNewsBySearch(Map<String, Object> map);
+
+    Integer updateNews(News news);
 }

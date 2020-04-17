@@ -112,16 +112,20 @@
                     }
                     List<News> list = pages.getData();
                     for (News news : list) {
-                        out.print("<li style='width:100%'><div style='width:400px;display:inline-block'><a href=\"news_read.jsp?newsId=" + news.getNewsid() + "\">" + news.getNewstitle() + "</a></div>" + news.getPublishdate() + "<li>");
+                        out.print("<li style='width:100%'><div style='width:350px;display:inline-block'><a href=\"news_read.jsp?newsId=" + news.getNewsid() + "\">" + news.getNewstitle() + "</a></div>" + news.getPublishdate() + "<li>");
                     }
                 %>
             </ul>
 
             当前页数:[<%=pages.getPage()%>/<%=pages.getCount()%>]&nbsp;
+            <%if (pages.getPrevious()) {%>
             <a href="doPage.jsp?pageIndex=1">首页&nbsp;&nbsp;</a>
             <a href="doPage.jsp?pageIndex=<%=pages.getPage()-1%>">上一页&nbsp;&nbsp;</a>
+            <%}%>
+            <%if (pages.getNext()) {%>
             <a href="doPage.jsp?pageIndex=<%=pages.getPage()+1%>">下一页&nbsp;&nbsp;</a>
             <a href="doPage.jsp?pageIndex=<%=pages.getCount()%>">末页</a> </p>
+            <%}%>
         </div>
         <div class="picnews">
             <ul>
