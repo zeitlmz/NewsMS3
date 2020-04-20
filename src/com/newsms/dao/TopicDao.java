@@ -40,4 +40,10 @@ public interface TopicDao {
      */
     int updateTopic(Integer topic, String newTopic);
 
+    /**
+     * 通过id查找主题
+     * @param topicId 主题id
+     * @return 主题信息
+     */
+    Topic selectTopicByid(Integer topicId);
 }

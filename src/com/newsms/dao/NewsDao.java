@@ -9,6 +9,7 @@ import java.util.Map;
  * @author lmz
  */
 public interface NewsDao {
+
     /**
      * 根据分页信息进行查询新闻
      *
@@ -61,6 +62,7 @@ public interface NewsDao {
 
     /**
      * 通过查询条件得到数据总条数
+     *
      * @param map1 查询条件集合
      * @return 数据总条数
      */
@@ -68,10 +70,32 @@ public interface NewsDao {
 
     /**
      * 通过分页和查询条件得到数据总条数
+     *
      * @param map 查询条件集合
      * @return 新闻数据集合
      */
     List<News> selectNewsBySearch(Map<String, Object> map);
 
+    /**
+     * 根据新闻id修改内容
+     *
+     * @param news 包含修改的文章信息和查询条件新闻id
+     * @return 修改成功数量
+     */
     Integer updateNews(News news);
+
+    /**
+     * 添加新闻
+     *
+     * @param news 新闻内容
+     * @return 添加成功数量
+     */
+    int addNews(News news);
+
+    /**
+     * 通过新闻编号删除该新闻
+     * @param newsId 新闻编号
+     * @return 删除成功的数量
+     */
+    int delNewsByNewsId(Integer newsId);
 }

@@ -1,9 +1,13 @@
 package com.newsms.service.impl;
 
+import java.util.ArrayList;
+
 import com.newsms.dao.TopicDao;
 import com.newsms.dao.impl.TopicDaoImpl;
+import com.newsms.entity.News;
 import com.newsms.entity.Topic;
 import com.newsms.service.TopicService;
+import com.newsms.util.ObjectEmpty;
 
 import java.util.List;
 
@@ -27,12 +31,27 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public boolean delTopic(Integer topicId) {
-        return topicDao.delTopic(topicId) > 0;
+    public int delTopic(Integer topicId) {
+        List<News> newsList = new NewsServiceImpl().selectNewsByTopicId(topicId);
+        if (newsList.size() == 0) {
+            return topicDao.delTopic(topicId);
+        } else {
+            return 2;
+        }
     }
 
     @Override
-    public boolean updateTopic(Integer topicId, String newTopic) {
-        return topicDao.updateTopic(topicId, newTopic) > 0;
+    public int updateTopic(Integer topicId, String newTopic) {
+        List<News> newsList = new NewsServiceImpl().selectNewsByTopicId(topicId);
+        if (newsList.size() == 0) {
+            return topicDao.updateTopic(topicId, newTopic);
+        } else {
+            return 2;
+        }
+    }
+
+    @Override
+    public Topic selectTopicByid(Integer topicId) {
+        return topicDao.selectTopicByid(topicId);
     }
 }

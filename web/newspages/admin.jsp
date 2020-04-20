@@ -1,4 +1,3 @@
-<%@ page import="java.util.List" %>
 <%@ page import="com.newsms.entity.News" %>
 <%@ page import="com.newsms.entity.Page" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -24,6 +23,7 @@
             <td>操作</td>
         </tr>
         <ul class="classlist">
+            <%--处理分页和遍历所有新闻--%>
             <%
                 String pageIndex = request.getParameter("page");
                 String limitIndex = request.getParameter("limit");
@@ -45,7 +45,7 @@
                                     "            <td width=\"600\" style=\"border-bottom: dashed 1px black\">" + news.getNewstitle() + "</td>" +
                                     "            <td style=\"border-bottom:dashed 1px black;\">\n" +
                                     "                <a href=\"news_modify.jsp?newsId=" + news.getNewsid() + "\" style=\"color: cornflowerblue\">修改</a>-\n" +
-                                    "                <a href=\"\"style=\"color: red\">删除</a>\n" +
+                                    "                <a class='delNews' href=\"\"style=\"color: red\">删除</a>\n" +
                                     "            </td>\n" +
                                     "        </tr>");
                         }
@@ -56,9 +56,17 @@
             %>
             <script>
                 $(function () {
-                    var url = window.location.href;
-                    var limit = parseInt(window.location.href.split("limit=")[1]);
-                    var page = parseInt(window.location.href.split("page=")[1].split("&limit=")[0]);
+                    let url = window.location.href;
+                    let limit = parseInt(window.location.href.split("limit=")[1]);
+                    let page = parseInt(window.location.href.split("page=")[1].split("&limit=")[0]);
+                    $(".delNews").click(function () {
+                        const newsId = $(this).parent().parent().find("td:first").text();
+                        const msg = confirm("确认删除编号为" + newsId + "的新闻？");
+                        if (msg) {
+                            location.href = "doDelNews.jsp?newsId=" + newsId;
+                        }
+                        return false;
+                    });
                     if (page == null || page < 2) {
                         page = 1;
                     }

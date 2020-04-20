@@ -138,8 +138,9 @@ a:hover {
 .side_list {
     height: 250px;
     background: url(../images/sidebarbg.gif) no-repeat;
-    margin: 2px 0 12px;
+    padding: 10px 10px;
 }
+
 
 .main {
     float: right;
@@ -276,6 +277,17 @@ a:hover {
     border: 1px solid #dfdfdf;
     background: url(../images/topbg.gif) repeat-x;
 }
+#header_read {
+    clear: both;
+    position: relative;
+    margin: 0 auto;
+    margin-top: 15px;
+    padding-left: 10px;
+    width: 935px;
+    height: 25px;
+    line-height: 25px;
+    box-shadow: 0 0 3px rgba(0,0,0,0.3);
+}
 
 #top_login {
     padding: 6px 0 0 10px;
@@ -372,7 +384,7 @@ a:hover {
 .side_list {
     height: 250px;
     background: url(../images/sidebarbg.gif) no-repeat;
-    margin: 2px 0 12px;
+    padding: 10px 10px;
 }
 
 .main {

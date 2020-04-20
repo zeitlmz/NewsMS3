@@ -11,6 +11,7 @@
     <title><%=news.getNewstitle()%></title>
 </head>
 <body>
+<div id="header_read"><a href="index.jsp">新闻主页</a></div>
 <div id="container">
     <%@include file="index-elements/index_sidebar.jsp" %>
     <div class="main">

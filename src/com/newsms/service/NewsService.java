@@ -56,5 +56,25 @@ public interface NewsService {
      */
     Page searchNews(Map<String, Object> map);
 
+    /**
+     * 根据新闻id修改内容
+     *
+     * @param news 包含修改的文章信息和查询条件新闻id
+     * @return 修改成功数量
+     */
     boolean updateNews(News news);
+
+    /**
+     * 添加新闻
+     * @param news 新闻内容
+     * @return 是否成功
+     */
+    boolean addNews(News news);
+
+    /**
+     * 通过新闻编号删除该新闻
+     * @param newsId 新闻编号
+     * @return 是否删除成功
+     */
+    boolean delNewsByNewsId(Integer newsId);
 }

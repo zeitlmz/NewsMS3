@@ -48,7 +48,7 @@ a:hover {
 }
 
 #top_login {
-    padding: 6px 0 0 10px;
+    padding: 6px 0 10px 10px;
 }
 
 .login_input {
@@ -85,7 +85,7 @@ a:hover {
 #logo {
     float: left;
     width: 145px;
-    margin: 8px 0 0 12px;
+    margin: 0 0 0 12px;
 }
 
 #mainnav {
@@ -138,8 +138,9 @@ a:hover {
 .side_list {
     height: 250px;
     background: url(../images/sidebarbg.gif) no-repeat;
-    margin: 2px 0 12px;
+    padding: 10px 10px;
 }
+
 
 .main {
     float: right;

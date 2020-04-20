@@ -28,7 +28,7 @@ public class TopicDaoImpl extends baseDao implements TopicDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             closeAll();
         }
         return list;
@@ -42,7 +42,7 @@ public class TopicDaoImpl extends baseDao implements TopicDao {
 
     @Override
     public int delTopic(Integer topicId) {
-        String sql = "delete form topic where topicId=?";
+        String sql = "delete from topic where topicId=?";
         return executeUpdate(sql, topicId);
     }
 
@@ -50,5 +50,23 @@ public class TopicDaoImpl extends baseDao implements TopicDao {
     public int updateTopic(Integer topic, String newTopic) {
         String sql = "update topic set topicName=?";
         return executeUpdate(sql, newTopic);
+    }
+
+    @Override
+    public Topic selectTopicByid(Integer topicId) {
+        String sql = "select * form topic where topicId=?";
+        ResultSet rs = executeQuery(sql, topicId);
+        Topic topic = null;
+        try {
+            rs.next();
+            topic = new Topic();
+            topic.setTopicId(rs.getInt("topicId"));
+            topic.setTopicName(rs.getString("topicName"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeAll();
+        }
+        return topic;
     }
 }

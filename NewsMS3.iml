@@ -20,5 +20,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="Tomcat 9.0.172" level="application_server_libraries" />
+    <orderEntry type="library" name="commons-fileupload-1.2.2" level="project" />
   </component>
 </module>

@@ -92,6 +92,16 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public boolean updateNews(News news) {
-        return newsDao.updateNews(news)>0;
+        return newsDao.updateNews(news) > 0;
+    }
+
+    @Override
+    public boolean addNews(News news) {
+        return newsDao.addNews(news) > 0;
+    }
+
+    @Override
+    public boolean delNewsByNewsId(Integer newsId) {
+        return newsDao.delNewsByNewsId(newsId)>0;
     }
 }

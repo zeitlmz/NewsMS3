@@ -10,26 +10,25 @@
     <div id="status">管理员： <%
         String realName = (String) session.getAttribute("realName");
         if (realName != null) {
-            out.print(realName+"&#160;&#160;&#160;&#160; <a href=\"loginout.jsp\">注销</a>");
-        }else {
+            out.print(realName + "&#160;&#160;&#160;&#160; <a href=\"loginout.jsp\">注销</a>");
+        } else {
             out.print("未登录");
         }
     %></div>
     <div id="channel"></div>
 </div>
 <div id="main">
-<div id="opt_list">
-    <ul>
-        <li><a href="admin.jsp?page=1&limit=5">新闻管理</a></li>
-        <li><a href="news_add.jsp">添加新闻</a></li>
-        <li><a href="news_modify.jsp">编辑新闻</a></li>
-        <li><a href="topic_add.jsp">添加主题</a></li>
-        <li><a href="topic_list.jsp">主题列表</a></li>
-    </ul>
-</div>
-    <%@include file="../../ppp.jsp"%>
+    <div id="opt_list">
+        <ul>
+            <li><a href="admin.jsp?page=1&limit=5">新闻管理</a></li>
+            <li><a href="news_add.jsp">添加新闻</a></li>
+            <li><a href="topic_add.jsp">添加主题</a></li>
+            <li><a href="topic_list.jsp">主题列表</a></li>
+        </ul>
+    </div>
+    <%@include file="../../ppp.jsp" %>
 <%
-if (session.getAttribute("realName")==null){
-    response.sendRedirect("../index.jsp");
-}
+    if (session.getAttribute("realName") == null) {
+        response.sendRedirect("../index.jsp");
+    }
 %>

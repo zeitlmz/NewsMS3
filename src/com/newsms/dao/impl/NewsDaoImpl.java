@@ -84,7 +84,7 @@ public class NewsDaoImpl extends baseDao implements NewsDao {
 
     @Override
     public List<News> selectNewsByTopicId(Integer topicId) {
-        String sql = "select newsId,newsTitle from news where topicId=?";
+        String sql = "select newsId,newsTitle from news where topicId=? limit 0,10";
         ResultSet rs = executeQuery(sql, topicId);
         List<News> list = new ArrayList<>();
         try {
@@ -213,6 +213,7 @@ public class NewsDaoImpl extends baseDao implements NewsDao {
         List<News> newsList = new ArrayList<>();
         Integer size = map.size();
         ResultSet rs = null;
+        //如果map集合里的参数只有两个，就执行这里的代码，因为我默认没搜索条件
         if (size == 2) {
             String sql = "select newsId,newsTitle,publishDate from news order by publishDate desc limit ?,? ";
             Object[] params = {map.get("page"), map.get("limit")};
@@ -293,5 +294,18 @@ public class NewsDaoImpl extends baseDao implements NewsDao {
                 "   where newsId=?;";
         Object[] params = {news.getNewstitle(), news.getNewsauthor(), news.getContent(), news.getTopicId(), news.getNewsid()};
         return executeUpdate(sql, params);
+    }
+
+    @Override
+    public int addNews(News news) {
+        String sql = "insert into news(newsTitle,newsAuthor,content,topicId) values(?,?,?,?)";
+        Object[] params = {news.getNewstitle(), news.getNewsauthor(), news.getContent(), news.getTopicId()};
+        return executeUpdate(sql, params);
+    }
+
+    @Override
+    public int delNewsByNewsId(Integer newsId) {
+        String sql = "delete from news where newsId=?";
+        return executeUpdate(sql, newsId);
     }
 }

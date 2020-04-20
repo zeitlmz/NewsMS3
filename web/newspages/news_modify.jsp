@@ -35,17 +35,17 @@
         </p>
         <p>
             <label> 标题 </label>
-            <input name="newsTitle" id="ntitle" type="text" required class="opt_input" style="width: 300px;"
+            <input name="newsTitle" type="text" required class="opt_input" style="width: 300px;"
                    value="<%=news.getNewstitle()%>"/>
         </p>
         <p>
             <label> 作者 </label>
-            <input name="newsAuthor" id="nauthor" type="text" required class="opt_input" style="width:100px"
+            <input name="newsAuthor" type="text" required class="opt_input" style="width:100px"
                    value="<%=news.getNewsauthor()%>"/>
         </p>
         <label> 内容: </label>
         <p>
-            <textarea name="content" id="ncontent" cols="120" required rows="20"><%=news.getContent()%></textarea>
+            <textarea name="content" cols="120" required rows="20"><%=news.getContent()%></textarea>
         </p>
         <%--        <p>--%>
         <%--            <label> 上传图片 </label>--%>
