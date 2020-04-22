@@ -111,13 +111,17 @@
                         pages = newsservice.selectNewsByPage(1, 10);
                     }
                     List<News> list = pages.getData();
-                    for (News news : list) {
-                        out.print("<li style='width:100%'><div style='width:350px;display:inline-block'><a href=\"news_read.jsp?newsId=" + news.getNewsid() + "\">" + news.getNewstitle() + "</a></div>" + news.getPublishdate() + "<li>");
-                    }
+                    if (list.size() == 0) {
+                        out.print("抱歉没有查到数据！");
+                    } else {
+                        for (News news : list) {
+                            out.print("<li style='width:100%'><div style='width:350px;display:inline-block'><a href=\"news_read.jsp?newsId=" + news.getNewsid() + "\">" + news.getNewstitle() + "</a></div>" + news.getPublishdate() + "<li>");
+                        }
                 %>
+                当前页数:[<%=pages.getPage()%>/<%=pages.getCount()%>]&nbsp;
+                <%}%>
             </ul>
 
-            当前页数:[<%=pages.getPage()%>/<%=pages.getCount()%>]&nbsp;
             <%if (pages.getPrevious()) {%>
             <a href="doPage.jsp?pageIndex=1">首页&nbsp;&nbsp;</a>
             <a href="doPage.jsp?pageIndex=<%=pages.getPage()-1%>">上一页&nbsp;&nbsp;</a>

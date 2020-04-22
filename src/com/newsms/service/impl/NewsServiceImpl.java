@@ -68,6 +68,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public Page searchNews(Map<String, Object> map) {
+        System.out.println("前端传入的当前页->" + map.get("page"));
         Page pages = new Page();
         pages.setLimit((Integer) map.get("limit"));
         Map<String, Object> map1 = new HashMap<>();
@@ -77,14 +78,16 @@ public class NewsServiceImpl implements NewsService {
         map1.remove("page");
         map1.remove("limit");
         Integer count = newsDao.selectCountBySearch(map1);
+        System.out.println("查出的数据总数-》" + count);
         pages.setCount(count);
-        if ((Integer) map.get("page") > pages.getCount()) {
+        if ((Integer) map.get("page") > pages.getCount() & pages.getCount() > 0) {
             map.put("page", pages.getCount());
         } else if ((Integer) map.get("page") < 1) {
             map.put("page", 1);
         }
         pages.setPage((Integer) map.get("page"));
         map.put("page", ((Integer) map.get("page") - 1) * (Integer) map.get("limit"));
+        System.out.println("业务层计算的-》->" + map.get("page"));
         List<News> list = newsDao.selectNewsBySearch(map);
         pages.setData(list);
         return pages;
@@ -102,6 +105,6 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public boolean delNewsByNewsId(Integer newsId) {
-        return newsDao.delNewsByNewsId(newsId)>0;
+        return newsDao.delNewsByNewsId(newsId) > 0;
     }
 }
