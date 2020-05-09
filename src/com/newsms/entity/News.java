@@ -6,7 +6,7 @@ package com.newsms.entity;
  * @author makejava
  * @since 2020-04-10 10:26:33
  */
-public class News{
+public class News {
     //新闻id
     private Long newsid;
     //新闻标题
@@ -19,7 +19,16 @@ public class News{
     private Object publishdate;
     //分类
     private Integer topicId;
+    //图片
+    private String picture;
 
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
 
     public Long getNewsid() {
         return newsid;

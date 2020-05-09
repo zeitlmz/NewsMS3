@@ -1,6 +1,7 @@
 <%@ page import="com.newsms.entity.Author" %>
 <%@ page import="com.newsms.entity.Page" %>
 <%@ page import="com.newsms.entity.Topic" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <!DOCTYPE html>
@@ -13,18 +14,15 @@
     <script src="js/calendar/WdatePicker.js"></script>
 </head>
 <body>
+<%request.setAttribute("Author", request.getContextPath());%>
 <%@include file="ppp.jsp" %>
 <%
-    String username = request.getParameter("username");
-    String pwd = request.getParameter("pwd");
-    Author author = null;
-    if (username != null & pwd != null) {
-        author = authorService.login(username, pwd);
-        if (author != null) {
-            session.setAttribute("userName", author.getUserName());
-            session.setAttribute("realName", author.getRealName());
-            session.setAttribute("imageUrl", author.getImageUrl());
-        } else {
+    Author author = (Author) session.getAttribute("author");
+    if (author != null) {
+        session.setAttribute("userName", author.getUserName());
+        session.setAttribute("realName", author.getRealName());
+        session.setAttribute("imageUrl", author.getImageUrl());
+    } else {
 %>
 <script>
     $(function () {
@@ -32,7 +30,6 @@
     })
 </script>
 <%
-        }
     }
 %>
 <%
@@ -48,7 +45,7 @@
 %>
 <div id="header">
     <div id="top_login">
-        <form action="index.jsp" method="post">
+        <form action="${Author}/NewsLogin" method="post">
             <label> 登录名 </label>
             <input type="text" name="username" id="uname" required value=""/>
             <label> 密&#160;&#160;码 </label>
@@ -90,12 +87,9 @@
                         <td>
                             <select name="topicId">
                                 <option value="">全部</option>
-                                <%
-                                    List<Topic> topics = topicService.selectTopicList();
-                                    for (Topic topic : topics) {
-                                        out.print("<option value='" + topic.getTopicId() + "'>" + topic.getTopicName() + "</option>");
-                                    }
-                                %>
+                                <c:forEach items="${topicList}" var="t">
+                                    <option value="${t.topicId}">${t.topicName}</option>
+                                </c:forEach>
                             </select>
                         </td>
                         <td><label></label></td>

@@ -2,6 +2,8 @@ package com.newsms.dao;
 
 import com.newsms.entity.Author;
 
+import java.sql.SQLException;
+
 /**
  * (Author)表数据库访问层
  *
@@ -15,5 +17,5 @@ public interface AuthorDao {
      * @param pwd 密码
      * @return 用户信息对象
      */
-    Author login(String userName, String pwd);
+    Author login(String userName, String pwd) throws SQLException;
 }

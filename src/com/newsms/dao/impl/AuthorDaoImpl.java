@@ -1,34 +1,35 @@
 package com.newsms.dao.impl;
 
+import com.newsms.dao.AuthorDao;
+import com.newsms.entity.Author;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.newsms.dao.AuthorDao;
-import com.newsms.dao.baseDao;
-import com.newsms.entity.Author;
 
 /**
  * @author lmz
  */
-public class AuthorDaoImpl extends baseDao implements AuthorDao {
+public class AuthorDaoImpl implements AuthorDao {
+    private Connection conn = null;
+
+    public AuthorDaoImpl(Connection conn) {
+        this.conn = conn;
+    }
 
     @Override
-    public Author login(String userName, String pwd) {
+    public Author login(String userName, String pwd) throws SQLException {
         String sql = "select * from author where userName=? and pwd=?";
-        Object[] args = {userName, pwd};
-        ResultSet rs = executeQuery(sql, args);
-        Author author = null;
-        try {
-            while (rs.next()) {
-                author = new Author();
-                author.setUserName(rs.getString("userName"));
-                author.setRealName(rs.getString("realName"));
-                author.setImageUrl(rs.getString("imageUrl"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            closeAll();
+        PreparedStatement pstm = this.conn.prepareStatement(sql);
+        pstm.setString(1, userName);
+        pstm.setString(2, pwd);
+        ResultSet rs = pstm.executeQuery();
+        Author author = new Author();
+        while (rs.next()) {
+            author.setUserName(rs.getString("userName"));
+            author.setRealName(rs.getString("realName"));
+            author.setImageUrl(rs.getString("imageUrl"));
         }
         return author;
     }

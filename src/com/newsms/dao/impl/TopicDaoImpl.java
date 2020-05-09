@@ -1,9 +1,10 @@
 package com.newsms.dao.impl;
 
 import com.newsms.dao.TopicDao;
-import com.newsms.dao.baseDao;
 import com.newsms.entity.Topic;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,61 +13,71 @@ import java.util.List;
 /**
  * @author lmz
  */
-public class TopicDaoImpl extends baseDao implements TopicDao {
+public class TopicDaoImpl implements TopicDao {
+    private Connection conn = null;
+
+    public TopicDaoImpl(Connection conn) {
+        this.conn = conn;
+    }
 
     @Override
-    public List<Topic> selectTopicList() {
+    public List<Topic> selectTopicList() throws SQLException {
         String sql = "select * from topic";
-        ResultSet rs = executeQuery(sql);
+        PreparedStatement pstm = this.conn.prepareStatement(sql);
+        ResultSet rs = pstm.executeQuery();
         List<Topic> list = new ArrayList<>();
-        try {
-            while (rs.next()) {
-                Topic topic = new Topic();
-                topic.setTopicId(rs.getInt("topicId"));
-                topic.setTopicName(rs.getString("topicName"));
-                list.add(topic);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            closeAll();
+        while (rs.next()) {
+            Topic topic = new Topic();
+            topic.setTopicId(rs.getInt("topicId"));
+            topic.setTopicName(rs.getString("topicName"));
+            list.add(topic);
         }
         return list;
     }
 
     @Override
-    public int addTopic(String topicName) {
+    public int addTopic(String topicName) throws SQLException {
         String sql = "insert into topic(topicName) values(?)";
-        return executeUpdate(sql, topicName);
+        PreparedStatement pstm = this.conn.prepareStatement(sql);
+        pstm.setString(1, topicName);
+        int count=pstm.executeUpdate();
+        System.out.println("成功添加主题：:"+count+"个");
+        return count;
     }
 
     @Override
-    public int delTopic(Integer topicId) {
+    public int delTopic(Integer topicId) throws SQLException {
         String sql = "delete from topic where topicId=?";
-        return executeUpdate(sql, topicId);
+//        String sql = "delete from topic where topicId=?";
+        PreparedStatement pstm = this.conn.prepareStatement(sql);
+        pstm.setInt(1, topicId);
+        int count=pstm.executeUpdate();
+        System.out.println("成功删除主题：:"+count+"个");
+        return count;
     }
 
     @Override
-    public int updateTopic(Integer topic, String newTopic) {
-        String sql = "update topic set topicName=?";
-        return executeUpdate(sql, newTopic);
+    public int updateTopic(Integer topicId, String newTopic) throws SQLException {
+        String sql = "update topic set topicName=? where topicId=?";
+        PreparedStatement pstm = this.conn.prepareStatement(sql);
+        pstm.setString(1, newTopic);
+        pstm.setInt(2, topicId);
+        int count=pstm.executeUpdate();
+        System.out.println("成功修改主题：:"+count+"个");
+        return count;
     }
 
     @Override
-    public Topic selectTopicByid(Integer topicId) {
-        String sql = "select * form topic where topicId=?";
-        ResultSet rs = executeQuery(sql, topicId);
+    public Topic selectTopicByid(Integer topicId) throws SQLException {
+        String sql = "select * from topic where topicId=?";
+        PreparedStatement pstm = this.conn.prepareStatement(sql);
+        pstm.setInt(1, topicId);
+        ResultSet rs = pstm.executeQuery();
         Topic topic = null;
-        try {
-            rs.next();
-            topic = new Topic();
-            topic.setTopicId(rs.getInt("topicId"));
-            topic.setTopicName(rs.getString("topicName"));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            closeAll();
-        }
+        rs.next();
+        topic = new Topic();
+        topic.setTopicId(rs.getInt("topicId"));
+        topic.setTopicName(rs.getString("topicName"));
         return topic;
     }
 }

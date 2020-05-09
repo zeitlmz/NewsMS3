@@ -2,6 +2,8 @@ package com.newsms.service;
 
 import com.newsms.entity.Author;
 
+import java.sql.SQLException;
+
 /**
  * (Author)表服务接口
  *
@@ -15,5 +17,5 @@ public interface AuthorService {
      * @param pwd 密码
      * @return 用户信息对象
      */
-    Author login(String userName, String pwd);
+    Author login(String userName, String pwd) throws SQLException;
 }

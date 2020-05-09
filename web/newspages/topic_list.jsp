@@ -34,7 +34,7 @@
             </td>
             <td width="200"><%=topic.getTopicName()%>
             </td>
-            <td><a href="topic_modify.jsp" style="color: cornflowerblue">修改</a>-<a class="delTopic" href="" style="color: red">删除</a>
+            <td><a href="topic_modify.jsp?topicId=<%=topic.getTopicId()%>" style="color: cornflowerblue">修改</a>-<a class="delTopic" href="" style="color: red">删除</a>
         </tr>
         <%}%>
     </table>

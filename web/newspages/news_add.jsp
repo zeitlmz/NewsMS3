@@ -1,5 +1,6 @@
 <%@ page import="com.newsms.entity.Topic" %>
 <%@ page import="java.util.List" %>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -12,7 +13,7 @@
 
 <div id="opt_area">
     <h1 id="opt_type"> 添加新闻： </h1>
-    <form action="doAdd_news.jsp" method="post">
+    <form action="doAdd_news.jsp" method="post" enctype="multipart/form-data">
         <p>
             <label> 主题 &nbsp;</label>
             <select name="topicId">
@@ -36,10 +37,9 @@
         <p>
             <textarea name="content" cols="120" required rows="20"></textarea>
         </p>
-        <%--        <p>--%>
-        <%--            <label> 上传图片 </label>--%>
-        <%--            <input name="file" type="file" class="opt_input"/>--%>
-        <%--        </p>--%>
+        <p><label> 图片: </label>
+            <input type="file" name="pic">
+        </p>
         <input type="submit" value="提交" class="opt_sub"/>
         <input type="reset" value="重置" class="opt_sub"/>
     </form>
