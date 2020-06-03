@@ -1,5 +1,4 @@
-<%@ page import="com.newsms.entity.News" %>
-<%@ page import="com.newsms.entity.Page" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -9,128 +8,77 @@
     <meta http-equiv="keywords" content="keyword1,keyword2,keyword3"/>
     <meta http-equiv="description" content="This is my page"/>
     <title>新闻管理后台</title>
-    <link href="../css/admin.css" rel="stylesheet" type="text/css"/>
-    <script src="../js/jquery-3.4.1.min.js"></script>
+    <link href="./css/admin.css" rel="stylesheet" type="text/css"/>
+    <script src="./js/jquery-3.4.1.min.js"></script>
 </head>
 <body>
+<%request.setAttribute("admin", request.getContextPath());%>
 <%@include file="console_element/edit.jsp" %>
 <div id="opt_area">
-    <h1 id="opt_type"> 新闻列表 </h1>
-    <table style="font-size: 14px">
-        <tr style="font-weight: bolder;border: dashed 1px #d9d9d9">
-            <td>编号</td>
-            <td>标题</td>
-            <td>操作</td>
-        </tr>
+    <div class="content">
+        <h1 id="opt_type"> 搜索新闻 </h1>
+        <form action="${admin}/admin" method="get">
+            <input type="hidden" name="action" value="adminSearchNews">
+            <table>
+                <tr>
+                    <td><label>新闻标题</label></td>
+                    <td><input type="text" name="newsTitle" placeholder="输入搜素内容"></td>
+                    <td><label>作者</label></td>
+                    <td><input type="text" name="newsAuthor" placeholder="输入搜素内容"></td>
+                </tr>
+                <tr>
+                    <td><label>内容</label></td>
+                    <td><input type="text" name="content" placeholder="输入搜素内容"></td>
+                    <td><label>发布时间</label></td>
+                    <td><input type="text" name="publishDate" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})">
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>主题</label></td>
+                    <td>
+                        <select name="topicId">
+                            <option value="">全部</option>
+                            <c:forEach items="${topics}" var="t">
+                                <option value="${t.topicId}">${t.topicName}</option>
+                            </c:forEach>
+                        </select>
+                    </td>
+                    <td><label></label></td>
+                    <td><input type="submit" value="搜索"></td>
+                </tr>
+            </table>
+        </form>
+        <h1 id="opt_type"> 新闻列表 </h1>
         <ul class="classlist">
-            <%--处理分页和遍历所有新闻--%>
-            <%
-                String pageIndex = request.getParameter("page");
-                String limitIndex = request.getParameter("limit");
-                if (limitIndex == null) {
-                    limitIndex = "5";
-                }
-                if (pageIndex == null || Integer.parseInt(pageIndex) < 2) {
-                    pageIndex = "1";
-                }
-                Integer limit = Integer.parseInt(limitIndex);
-                Integer currPage = Integer.valueOf(pageIndex);
-                Page pages = null;
-                if (realName != null) {
-                    pages = newsservice.selectNewsByRealName(currPage, limit, realName);
-                    if (pages != null) {
-                        for (News news : pages.getData()) {
-                            out.print("<tr>\n" +
-                                    "            <td width=\"60\" style=\"border-bottom: dashed 1px black;height: 35px\">" + news.getNewsid() + "</td>\n" +
-                                    "            <td width=\"600\" style=\"border-bottom: dashed 1px black\">" + news.getNewstitle() + "</td>" +
-                                    "            <td style=\"border-bottom:dashed 1px black;\">\n" +
-                                    "                <a href=\"news_modify.jsp?newsId=" + news.getNewsid() + "\" style=\"color: cornflowerblue\">修改</a>-\n" +
-                                    "                <a class='delNews' href=\"\"style=\"color: red\">删除</a>\n" +
-                                    "            </td>\n" +
-                                    "        </tr>");
-                        }
-                    } else {
-                        out.print("暂无新闻~");
-                    }
-                    currPage = pages.getPage();
-            %>
-            <script>
-                $(function () {
-                    let url = window.location.href;
-                    let limit = parseInt(window.location.href.split("limit=")[1]);
-                    let page = parseInt(window.location.href.split("page=")[1].split("&limit=")[0]);
-                    $(".delNews").click(function () {
-                        const newsId = $(this).parent().parent().find("td:first").text();
-                        const msg = confirm("确认删除编号为" + newsId + "的新闻？");
-                        if (msg) {
-                            location.href = "doDelNews.jsp?newsId=" + newsId;
-                        }
-                        return false;
-                    });
-                    if (page == null || page < 2) {
-                        page = 1;
-                    }
-                    if (page >=<%=pages.getCount()%>) {
-                        page =<%=pages.getCount()%>;
-                    }
-                    $("#limit").val(limit);
-                    $("#limit").change(function () {
-                        location.href = "admin.jsp?page=1&limit=" + $(this).val();
-                    });
-                    if (page ===<%=pages.getCount()%>) {
-                        $("#fristPage").show();
-                        $("#previousPage").show();
-                        $("#nextPage").hide();
-                        $("#lastPage").hide();
-                    } else if (page === 1) {
-                        $("#fristPage").hide();
-                        $("#previousPage").hide();
-                        $("#nextPage").show();
-                        $("#lastPage").show();
-                    }
-                    $("#nextPage").click(function () {
-                        location.href = "admin.jsp?page=" + (page + 1) + "&limit=" + limit;
-                    });
-                    $("#lastPage").click(function () {
-                        location.href = "admin.jsp?page=<%=pages.getCount()%>&limit=" + limit;
-                    });
-
-                    $("#fristPage").click(function () {
-                        location.href = "admin.jsp?page=1&limit=" + limit;
-                    });
-                    $("#previousPage").click(function () {
-                        location.href = "admin.jsp?page=" + (page - 1) + "&limit=" + limit;
-                    });
-                })
-            </script>
-            <p>当前页数:[<%=currPage%>/<%=pages.getCount()%>]&nbsp;
-                <button id="fristPage">首页&nbsp;&nbsp;</button>
-                <button id="previousPage">上一页&nbsp;&nbsp;</button>
-                <button id="nextPage">下一页&nbsp;&nbsp;</button>
-                <button id="lastPage">末页</button>
-                <select id="limit">
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="20">20</option>
-                    <option value="25">25</option>
-                    <option value="30">30</option>
-                    <option value="35">35</option>
-                    <option value="40">40</option>
-                    <option value="45">45</option>
-                    <option value="50">50</option>
-                </select>
-            </p>
-            <%
-                }
-            %>
+            <c:forEach items="${adminNews.data}" var="news">
+                <li>
+                    <a href="${admin}/admin?action=newsRead?newsid=${news.newsid}">${news.newstitle}</a><span></span><span>${news.publishdate}</span>
+                </li>
+            </c:forEach>
+            <c:choose>
+                <c:when test="${empty adminNews.data}">
+                    <li>没搜到相关新闻(⊙o⊙)…</li>
+                </c:when>
+            </c:choose>
         </ul>
-    </table>
-</div>
+        <c:choose>
+            <c:when test="${adminNews.count>0}">当前${adminNews.page}/${adminNews.count}页</c:when>
+        </c:choose>
+        <c:choose>
+            <c:when test="${adminNews.isPrevious}">
+                <a href="${admin}/admin?action=adminSearchNewsPage&pageIndex=1">首页&nbsp;&nbsp;</a>
+                <a href="${admin}/admin?action=adminSearchNewsPage&pageIndex=${adminNews.page-1}">上一页&nbsp;&nbsp;</a>
+            </c:when>
+        </c:choose>
+
+        <c:choose>
+            <c:when test="${adminNews.isNext}">
+                <a href="${admin}/admin?action=adminSearchNewsPage&pageIndex=${adminNews.page+1}">下一页&nbsp;&nbsp;</a>
+                <a href="${admin}/admin?action=adminSearchNewsPage&pageIndex=${adminNews.count}">末页</a> </p>
+            </c:when>
+        </c:choose>
+    </div>
 </div>
 <%@include file="../index-elements/index_bottom.html" %>
-</body>
-</html>
-</div>
 </body>
 </html>

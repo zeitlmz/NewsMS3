@@ -36,6 +36,8 @@ public class TopicServiceImpl implements TopicService {
             topics = topicDao.selectTopicList();
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            con.removeConnection();
         }
         return topics;
     }
@@ -50,6 +52,8 @@ public class TopicServiceImpl implements TopicService {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            con.removeConnection();
         }
         return false;
     }

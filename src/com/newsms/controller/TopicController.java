@@ -5,7 +5,9 @@ import com.newsms.entity.Topic;
 import com.newsms.service.TopicService;
 import com.newsms.service.impl.TopicServiceImpl;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -15,11 +17,45 @@ import java.util.List;
 /**
  * @author lmz
  */
-@WebServlet(name = "Topic")
-public class TopicController extends BaseServlet {
+@WebServlet("/topic")
+public class TopicController extends HttpServlet {
 
     private TopicService topicService = new TopicServiceImpl();
 
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doPost(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String action = req.getParameter("actioon");
+        if ("".equals(action)) {
+
+        } else if ("".equals(action)) {
+
+        } else if ("".equals(action)) {
+
+        } else if ("".equals(action)) {
+
+        } else if ("".equals(action)) {
+
+        } else if ("".equals(action)) {
+
+        } else if ("".equals(action)) {
+
+        } else if ("".equals(action)) {
+
+        } else if ("".equals(action)) {
+
+        } else if ("".equals(action)) {
+
+        } else if ("".equals(action)) {
+
+        } else if ("".equals(action)) {
+
+        }
+    }
 
     public void selectTopicList(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Gson gson = new Gson();

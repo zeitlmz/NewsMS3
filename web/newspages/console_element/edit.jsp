@@ -1,20 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <div id="header">
-    <div id="welcome">欢迎使用新闻管理系统！/<a href="../index.jsp">主页</a></div>
+    <div id="welcome">欢迎使用新闻管理系统！/<a href="${admin}/News?action=index">主页</a></div>
     <div id="nav">
-        <div id="logo"><img src="../images/logo.jpg" alt="新闻中国"/></div>
-        <div id="a_b01"><img src="../images/a_b01.gif" alt=""/></div>
+        <div id="logo"><img src="./images/logo.jpg" alt="新闻中国"/></div>
+        <div id="a_b01"><img src="./images/a_b01.gif" alt=""/></div>
     </div>
 </div>
 <div id="admin_bar">
-    <div id="status">管理员： <%
-        String realName = (String) session.getAttribute("realName");
-        if (realName != null) {
-            out.print(realName + "&#160;&#160;&#160;&#160; <a href=\"loginout.jsp\">注销</a>");
-        } else {
-            out.print("未登录");
-        }
-    %></div>
+    <div id="status">管理员
+</div>
     <div id="channel"></div>
 </div>
 <div id="main">
@@ -26,9 +20,3 @@
             <li><a href="topic_list.jsp">主题列表</a></li>
         </ul>
     </div>
-    <%@include file="../../ppp.jsp" %>
-<%
-    if (session.getAttribute("realName") == null) {
-        response.sendRedirect("../index.jsp");
-    }
-%>

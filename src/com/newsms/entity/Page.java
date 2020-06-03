@@ -1,6 +1,5 @@
 package com.newsms.entity;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class Page {
@@ -17,17 +16,17 @@ public class Page {
                 "page=" + page +
                 ", limit=" + limit +
                 ", count=" + count +
-                ", isPrevious=" + getPrevious() +
-                ", isNext=" + getNext() +
+                ", isPrevious=" + getIsPrevious() +
+                ", isNext=" + getIsNext() +
                 ", data=" + data +
                 '}';
     }
 
-    public Boolean getPrevious() {
+    public Boolean getIsPrevious() {
         return getPage() > 1;
     }
 
-    public Boolean getNext() {
+    public Boolean getIsNext() {
         return getPage() < getCount();
     }
 

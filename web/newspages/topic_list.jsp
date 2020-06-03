@@ -1,11 +1,3 @@
-<%@ page import="com.newsms.entity.Topic" %>
-<%@ page import="java.util.List" %><%--
-  Created by IntelliJ IDEA.
-  User: lmz
-  Date: 2020/4/14
-  Time: 15:05
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -25,18 +17,13 @@
             <td>标题</td>
             <td>操作</td>
         </tr>
-        <%
-            List<Topic> topics = topicService.selectTopicList();
-            for (Topic topic : topics) {
-        %>
         <tr>
-            <td width="60"><%=topic.getTopicId()%>
+            <td width="60">
             </td>
-            <td width="200"><%=topic.getTopicName()%>
+            <td width="200">
             </td>
-            <td><a href="topic_modify.jsp?topicId=<%=topic.getTopicId()%>" style="color: cornflowerblue">修改</a>-<a class="delTopic" href="" style="color: red">删除</a>
+            <td><a href="topic_modify.jsp?topicId=" style="color: cornflowerblue">修改</a>-<a class="delTopic" href="" style="color: red">删除</a>
         </tr>
-        <%}%>
     </table>
 </div>
 <script src="../js/jquery-3.4.1.min.js"></script>

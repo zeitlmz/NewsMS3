@@ -1,6 +1,3 @@
-<%@ page import="com.newsms.entity.Author" %>
-<%@ page import="com.newsms.entity.Page" %>
-<%@ page import="com.newsms.entity.Topic" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
@@ -12,49 +9,37 @@
     <link href="css/main.css" rel="stylesheet" type="text/css"/>
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="js/calendar/WdatePicker.js"></script>
+    <style>
+        .classlist li {
+            background: red;
+        }
+    </style>
 </head>
 <body>
-<%request.setAttribute("Author", request.getContextPath());%>
-<%@include file="ppp.jsp" %>
-<%
-    Author author = (Author) session.getAttribute("author");
-    if (author != null) {
-        session.setAttribute("userName", author.getUserName());
-        session.setAttribute("realName", author.getRealName());
-        session.setAttribute("imageUrl", author.getImageUrl());
-    } else {
-%>
-<script>
-    $(function () {
-        $("#error").html("用户名或者账号错误！");
-    })
-</script>
-<%
-    }
-%>
-<%
-    if (session.getAttribute("userName") != null) {
-%>
-<script>
-    $(function () {
-        $("#top_login").html("欢迎<%=session.getAttribute("realName")%>登陆新闻系统/<a href='newspages/admin.jsp?page=1&limit=5'>新闻管理</a>");
-    })
-</script>
-<%
-    }
-%>
+<%request.setAttribute("index", request.getContextPath());%>
 <div id="header">
     <div id="top_login">
-        <form action="${Author}/NewsLogin" method="post">
-            <label> 登录名 </label>
-            <input type="text" name="username" id="uname" required value=""/>
-            <label> 密&#160;&#160;码 </label>
-            <input type="password" name="pwd" required value=""/>
-            <input type="submit" class="login_sub" value="登录"/>
-            <label id="error"></label>
-            <img src="images/friend_logo.gif" alt="Google" id="friend_logo"/>
-        </form>
+        <c:choose>
+            <c:when test="${empty author}">
+                <form action="${index}/login" method="post">
+                    <label> 登录名 </label>
+                    <input type="text" name="username" required value=""/>
+                    <label> 密&#160;&#160;码 </label>
+                    <input type="password" name="pwd" required value=""/>
+                    <input type="submit" class="login_sub" value="登录"/>
+                    <label id="error"></label>
+                    <img src="images/friend_logo.gif" alt="Google" id="friend_logo"/>
+                </form>
+            </c:when>
+        </c:choose>
     </div>
+    <c:choose>
+        <c:when test="${!empty author}">
+            <script>
+                document.getElementById("top_login").innerHTML = "欢迎管理员:${author.realName} 登陆新闻管理系统！--><a href='${index}/admin?action=adminSearchNews'>进入后台</a>";
+            </script>
+        </c:when>
+    </c:choose>
     <div id="nav">
         <div id="logo"><img src="images/logo.jpg" alt="新闻中国"/></div>
         <div id="a_b01"><img src="images/a_b01.gif" alt=""/></div>
@@ -67,7 +52,8 @@
         <div class="class_type"><img src="images/class_type.gif" alt="新闻中心"/></div>
         <div class="content">
             <h1 id="opt_type"> 搜索新闻 </h1>
-            <form action="doSearch.jsp" method="get">
+            <form action="${index}/News" method="get">
+                <input type="hidden" name="action" value="searchNews">
                 <table>
                     <tr>
                         <td><label>新闻标题</label></td>
@@ -87,9 +73,6 @@
                         <td>
                             <select name="topicId">
                                 <option value="">全部</option>
-                                <c:forEach items="${topicList}" var="t">
-                                    <option value="${t.topicId}">${t.topicName}</option>
-                                </c:forEach>
                             </select>
                         </td>
                         <td><label></label></td>
@@ -99,31 +82,11 @@
             </form>
             <h1 id="opt_type"> 新闻列表 </h1>
             <ul class="classlist">
-                <%
-                    Page pages = (Page) session.getAttribute("pages");
-                    if (pages == null) {
-                        pages = newsservice.selectNewsByPage(1, 10);
-                    }
-                    List<News> list = pages.getData();
-                    if (list.size() == 0) {
-                        out.print("抱歉没有查到数据！");
-                    } else {
-                        for (News news : list) {
-                            out.print("<li style='width:100%'><div style='width:350px;display:inline-block'><a href=\"news_read.jsp?newsId=" + news.getNewsid() + "\">" + news.getNewstitle() + "</a></div>" + news.getPublishdate() + "<li>");
-                        }
-                %>
-                当前页数:[<%=pages.getPage()%>/<%=pages.getCount()%>]&nbsp;
-                <%}%>
             </ul>
-
-            <%if (pages.getPrevious()) {%>
-            <a href="doPage.jsp?pageIndex=1">首页&nbsp;&nbsp;</a>
-            <a href="doPage.jsp?pageIndex=<%=pages.getPage()-1%>">上一页&nbsp;&nbsp;</a>
-            <%}%>
-            <%if (pages.getNext()) {%>
-            <a href="doPage.jsp?pageIndex=<%=pages.getPage()+1%>">下一页&nbsp;&nbsp;</a>
-            <a href="doPage.jsp?pageIndex=<%=pages.getCount()%>">末页</a> </p>
-            <%}%>
+                    <a href="${index}/News?action=searchNewsByPage&pageIndex=1">首页&nbsp;&nbsp;</a>
+                    <a href="${index}/News?action=searchNewsByPage&pageIndex=${indexNews.page-1}">上一页&nbsp;&nbsp;</a>
+                    <a href="${index}/News?action=searchNewsByPage&pageIndex=${indexNews.page+1}">下一页&nbsp;&nbsp;</a>
+                    <a href="${index}/News?action=searchNewsByPage&pageIndex=${indexNews.count}">末页</a> </p>
         </div>
         <div class="picnews">
             <ul>

@@ -1,6 +1,3 @@
-<%@ page import="java.util.List" %>
-<%@ page import="com.newsms.entity.News" %>
-<%@ page import="com.newsms.entity.Topic" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -14,38 +11,31 @@
 </head>
 <body>
 <%@include file="console_element/edit.jsp" %>
-<%
-    Integer newsId = Integer.parseInt(request.getParameter("newsId"));
-    News news = newsservice.selectNewsByNewsId(newsId);
-%>
 <div id="opt_area">
     <h1 id="opt_type"> 编辑新闻： </h1>
-    <form action="doNews_modify.jsp" method="post">
-        <input type="hidden" name="newsId" value="<%=newsId%>">
+    <form action="" method="post">
+        <input type="hidden" name="newsId" value="">
         <p>
             <label> 主题 &nbsp;</label>
             <select name="topicId">
-                <%
-                    List<Topic> topics = topicService.selectTopicList();
-                    for (Topic topic : topics) {
-                        out.print("<option value='" + topic.getTopicId() + "'>" + topic.getTopicName() + "</option>");
-                    }
-                %>
+                <c:forEach items="${topicList}" var="t">
+                    <option value="${t.topicId}">${t.topicName}</option>
+                </c:forEach>
             </select>
         </p>
         <p>
             <label> 标题 </label>
             <input name="newsTitle" type="text" required class="opt_input" style="width: 300px;"
-                   value="<%=news.getNewstitle()%>"/>
+                   value=""/>
         </p>
         <p>
             <label> 作者 </label>
             <input name="newsAuthor" type="text" required class="opt_input" style="width:100px"
-                   value="<%=news.getNewsauthor()%>"/>
+                   value=""/>
         </p>
         <label> 内容: </label>
         <p>
-            <textarea name="content" cols="120" required rows="20"><%=news.getContent()%></textarea>
+            <textarea name="content" cols="120" required rows="20"></textarea>
         </p>
         <%--        <p>--%>
         <%--            <label> 上传图片 </label>--%>

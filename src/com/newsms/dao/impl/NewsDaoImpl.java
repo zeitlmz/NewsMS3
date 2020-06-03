@@ -133,7 +133,7 @@ public class NewsDaoImpl implements NewsDao {
         pstm.setInt(4, news.getTopicId());
         pstm.setLong(5, news.getNewsid());
         int count = pstm.executeUpdate();
-        System.out.println("成功修改新闻：:"+count+"条");
+        System.out.println("成功修改新闻：:" + count + "条");
         return count;
     }
 
@@ -147,7 +147,7 @@ public class NewsDaoImpl implements NewsDao {
         pstm.setInt(4, news.getTopicId());
         pstm.setString(5, news.getPicture());
         int count = pstm.executeUpdate();
-        System.out.println("成功增加新闻：:"+count+"条");
+        System.out.println("成功增加新闻：:" + count + "条");
         return count;
     }
 
@@ -157,7 +157,7 @@ public class NewsDaoImpl implements NewsDao {
         PreparedStatement pstm = conn.prepareStatement(sql);
         pstm.setInt(1, newsId);
         int count = pstm.executeUpdate();
-        System.out.println("成功删除新闻：:"+count+"条");
+        System.out.println("成功删除新闻：:" + count + "条");
         return count;
     }
 
@@ -218,17 +218,17 @@ public class NewsDaoImpl implements NewsDao {
                     }
                 }
             }
-        }
-        sb.append(" order by publishDate desc limit " + map.get("page") + "," + map.get("limit"));
-        System.out.println("条件查询生成的sql---》》" + sb);
-        PreparedStatement pstm = this.conn.prepareStatement(sb.toString());
-        rs = pstm.executeQuery();
-        while (rs.next()) {
-            News news = new News();
-            news.setNewsid(rs.getLong("newsId"));
-            news.setNewstitle(rs.getString("newsTitle"));
-            news.setPublishdate(rs.getDate("publishDate"));
-            newsList.add(news);
+            sb.append(" order by publishDate desc limit " + map.get("page") + "," + map.get("limit"));
+            System.out.println("条件查询生成的sql---》》" + sb);
+            PreparedStatement pstm = this.conn.prepareStatement(sb.toString());
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                News news = new News();
+                news.setNewsid(rs.getLong("newsId"));
+                news.setNewstitle(rs.getString("newsTitle"));
+                news.setPublishdate(rs.getDate("publishDate"));
+                newsList.add(news);
+            }
         }
         return newsList;
     }
@@ -280,12 +280,12 @@ public class NewsDaoImpl implements NewsDao {
                     }
                 }
             }
-        }
-        System.out.println("总数量查询生成的sql---》》" + sb);
-        PreparedStatement pstm = this.conn.prepareStatement(sb.toString());
-        rs = pstm.executeQuery();
-        while (rs.next()) {
-            count = rs.getInt(1);
+            System.out.println("总数量查询生成的sql---》》" + sb);
+            PreparedStatement pstm = this.conn.prepareStatement(sb.toString());
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt(1);
+            }
         }
         return count;
     }

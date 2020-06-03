@@ -18,7 +18,7 @@
 
     <div id="opt_area">
         <h1 id="opt_type"> 添加主题： </h1>
-        <form action="doTopic_add.jsp" method="post">
+        <form action="" method="post">
             <p>
                 <label> 主题名称 </label>
                 <input name="topicName" type="text" class="opt_input" id="tname"/>

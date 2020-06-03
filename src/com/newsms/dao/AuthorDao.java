@@ -18,4 +18,6 @@ public interface AuthorDao {
      * @return 用户信息对象
      */
     Author login(String userName, String pwd) throws SQLException;
+
+
 }

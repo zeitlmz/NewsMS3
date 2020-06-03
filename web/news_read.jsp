@@ -1,14 +1,9 @@
-<%@ page import="com.newsms.entity.News" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <link href="css/read.css" rel="stylesheet" type="text/css"/>
-    <%@include file="ppp.jsp"%>
-    <%
-        Integer newsId = Integer.valueOf(request.getParameter("newsId"));
-        News news=newsservice.selectNewsByNewsId(newsId);
-    %>
-    <title><%=news.getNewstitle()%></title>
+    <title>${newsread.newstitle}</title>
 </head>
 <body>
 <div id="header_read"><a href="index.jsp">新闻主页</a></div>
@@ -20,7 +15,7 @@
             <ul class="classlist">
                 <table width="80%" align="center">
                     <tr width="100%">
-                        <td colspan="2" align="center"><%=news.getNewstitle()%>></td>
+                        <td colspan="2" align="center"></td>
                     </tr>
                     <tr>
                         <td colspan="2">
@@ -28,15 +23,15 @@
                         </td>
                     </tr>
                     <tr>
-                        <td align="center">作者:<%=news.getNewsauthor()%></td>
-                        <td align="left">发布时间：<%=news.getPublishdate()%></td>
+                        <td align="center">作者:${newsread.newsauthor}</td>
+                        <td align="left">发布时间：${newsread.publishdate}</td>
                     </tr>
                     <tr>
                         <td colspan="2" align="center"></td>
                     </tr>
                 </table>
             </ul>
-            <div id="content" style="padding: 50px;font-size:16px"><%=news.getContent()%></div>
+            <div id="content" style="padding: 50px;font-size:16px">${newsread.content}</div>
             <ul class="classlist">
                 <table width="80%" align="center">
                         <td colspan="6"> 暂无评论！</td>
@@ -80,7 +75,7 @@
                                     <input id="cauthor" name="cauthor" value="这家伙很懒什么也没留下"/>
                                 </c:if>
                                 IP：
-                                <input name="cip" id="cip" value="<%=request.getRemoteAddr() %>" readonly="readonly"
+                                <input name="cip" id="cip" value="" readonly="readonly"
                                        style="border:0px;"/>
                             </td>
                         </tr>

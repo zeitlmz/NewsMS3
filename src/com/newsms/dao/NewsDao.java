@@ -86,8 +86,8 @@ public interface NewsDao {
     List<News> selectNewsBySearch(Map<String, Object> map) throws SQLException;
 
     /**
-     *
      * 根据新闻id修改内容
+     *
      * @param news 包含修改的文章信息和查询条件新闻id
      * @return 修改成功数量
      * @throws SQLException sql异常
@@ -105,6 +105,7 @@ public interface NewsDao {
 
     /**
      * 通过新闻编号删除该新闻
+     *
      * @param newsId 新闻编号
      * @return 删除成功的数量
      * @throws SQLException sql异常

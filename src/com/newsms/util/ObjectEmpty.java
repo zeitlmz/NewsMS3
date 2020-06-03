@@ -10,7 +10,6 @@ public class ObjectEmpty {
           * @return
           */
     public static Boolean isNotEmpty(Object obj) {
-        System.out.println("工具："+obj);
         return !"".equals(obj) && obj != null;
     }
 }

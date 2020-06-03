@@ -85,7 +85,6 @@ public class NewsServiceImpl implements NewsService {
         try {
             news = newsDao.selectNewsByTopicId(topicId);
         } catch (SQLException e) {
-
             e.printStackTrace();
         }
         return news;
@@ -133,7 +132,6 @@ public class NewsServiceImpl implements NewsService {
 
         //把从连接辅助类经过线程安全化处理的conn连接传给dao层
         NewsDao newsDao = new NewsDaoImpl(con.getThreadConnection());
-        System.out.println("前端传入的当前页->" + map.get("page"));
         Page pages = new Page();
         pages.setLimit((Integer) map.get("limit"));
         Map<String, Object> map1 = new HashMap<>();
@@ -149,7 +147,6 @@ public class NewsServiceImpl implements NewsService {
 
             e.printStackTrace();
         }
-        System.out.println("查出的数据总数-》" + count);
         pages.setCount(count);
         if ((Integer) map.get("page") > pages.getCount() & pages.getCount() > 0) {
             map.put("page", pages.getCount());
@@ -158,7 +155,6 @@ public class NewsServiceImpl implements NewsService {
         }
         pages.setPage((Integer) map.get("page"));
         map.put("page", ((Integer) map.get("page") - 1) * (Integer) map.get("limit"));
-        System.out.println("业务层计算的-》->" + map.get("page"));
         List<News> list = null;
         try {
             list = newsDao.selectNewsBySearch(map);

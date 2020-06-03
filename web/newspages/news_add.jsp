@@ -1,6 +1,3 @@
-<%@ page import="com.newsms.entity.Topic" %>
-<%@ page import="java.util.List" %>
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -17,12 +14,9 @@
         <p>
             <label> 主题 &nbsp;</label>
             <select name="topicId">
-                <%
-                    List<Topic> topics = topicService.selectTopicList();
-                    for (Topic topic : topics) {
-                        out.print("<option value='" + topic.getTopicId() + "'>" + topic.getTopicName() + "</option>");
-                    }
-                %>
+                <c:forEach items="${topicList}" var="t">
+                    <option value="${t.topicId}">${t.topicName}</option>
+                </c:forEach>
             </select>
         </p>
         <p>
