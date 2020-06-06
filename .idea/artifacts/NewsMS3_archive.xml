@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="NewsMS3 archive">
+    <output-path>$PROJECT_DIR$/out/artifacts/NewsMS3_archive</output-path>
+    <root id="archive" name="NewsMS3 archive.war">
+      <element id="artifact" artifact-name="NewsMS3" />
+    </root>
+  </artifact>
+</component>

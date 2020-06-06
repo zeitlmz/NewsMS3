@@ -1,0 +1,42 @@
+<h1><img src="images/title_1.gif" alt="国内新闻"/></h1>
+<div class="side_list">
+    <ul id="gn"></ul>
+</div>
+<h1><img src="images/title_2.gif" alt="国际新闻"/></h1>
+<div class="side_list">
+    <ul id="gj"></ul>
+</div>
+<h1><img src="images/title_3.gif" alt="娱乐新闻"/></h1>
+<div class="side_list">
+    <ul id="yl"></ul>
+</div>
+<script>
+    $.ajax({
+        url: 'news',
+        method: "post",
+        data: {"action": "sideNewsList"},
+        success: function (data) {
+            const gj = data.gj;
+            let sgj = "";
+            for (const gjnews of gj) {
+                sgj += "<li><a href='/NewsMS3/newsread?newsid=" + gjnews.newsid + "'>" + gjnews.newstitle + "</a></li>";
+            }
+            $("#gj").html(sgj);
+            const gn = data.gn;
+            let sgn = "";
+            for (const gnnews of gn) {
+                sgn += "<li><a href='/NewsMS3/newsread?newsid=" + gnnews.newsid + "'>" + gnnews.newstitle + "</a></li>";
+            }
+            $("#gn").html(sgn);
+            const yl = data.yl;
+            let syl = "";
+            for (const ylnews of yl) {
+                syl += "<li><a href='/NewsMS3/newsread?newsid=" + ylnews.newsid + "'>" + ylnews.newstitle + "</a></li>";
+            }
+            $("#yl").html(syl);
+        },
+        error: function () {
+            alert("连接服务器失败！");
+        }
+    });
+</script>

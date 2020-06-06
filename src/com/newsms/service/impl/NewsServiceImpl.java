@@ -171,7 +171,7 @@ public class NewsServiceImpl implements NewsService {
         //把从连接辅助类经过线程安全化处理的conn连接传给dao层
         NewsDao newsDao = new NewsDaoImpl(con.getThreadConnection());
         try {
-            if (newsDao.updateNews(news) > 0) {
+            if (newsDao.updateNews(news) == 0) {
                 return false;
             }
         } catch (SQLException e) {

@@ -14,9 +14,6 @@ public class GlobalListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         System.out.println("初始化成功！");
-        TopicService topicService = new TopicServiceImpl();
-        List<Topic> topics = topicService.selectTopicList();
-        sce.getServletContext().setAttribute("topics", topics);
     }
 
     @Override

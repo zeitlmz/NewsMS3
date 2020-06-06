@@ -1,0 +1,43 @@
+<div id="header">
+    <div id="welcome"></div>
+    <div id="nav">
+        <div id="logo"><img src="./images/logo.jpg" alt="新闻中国"/></div>
+        <div id="a_b01"><img src="./images/a_b01.gif" alt=""/></div>
+    </div>
+</div>
+<div id="admin_bar">
+    <div id="status">管理员 <span id="adName"></span></div>
+    <div id="channel"></div>
+</div>
+<script>
+    $.ajax({
+        url: 'user',
+        method: "post",
+        data: {"action": "getSession"},
+        success: function (data) {
+            if (data !== null) {
+                $("#welcome").html("欢迎管理员:" + data.realName + "登陆新闻管理系统！--><a href='/NewsMS3'>回到主页</a>")
+                $("#adName").html(data.realName + "-<a onclick='logout()'>注销</a>")
+            }
+        },
+        error: function () {
+            alert("连接服务器失败！");
+        }
+    });
+
+    function logout() {
+        if (confirm("确认退出登录？")) {
+            $.ajax({
+                url: 'user',
+                method: "post",
+                data: {"action": "logout"},
+                success: function () {
+                    location.reload();
+                },
+                error: function () {
+                    alert("连接服务器失败！");
+                }
+            });
+        }
+    }
+</script>

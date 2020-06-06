@@ -1,0 +1,73 @@
+<html>
+<head>
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="This is my page">
+    <title>主题编辑</title>
+    <link href="./css/admin.css" rel="stylesheet" type="text/css"/>
+    <script src="./js/jquery-3.4.1.min.js"></script>
+
+</head>
+<body onload="selecttopic()">
+<div id="adminheader"></div>
+<div id="container">
+    <div id="opt_list"></div>
+    <div id="opt_area">
+        <h1 id="opt_type"> 修改主题： </h1>
+        <form id="topicModify">
+            <p>
+                <label> 主题名称 </label>
+                <input type="hidden" name="action" value="topicmodify">
+                <input type="hidden" name="topicId">
+                <input name="topicName" required type="text" class="opt_input" value=""/>
+            </p>
+            <input type="button" onclick="topicUpdate()" value="修改" class="opt_sub"/>
+            <input type="reset" value="重置" class="opt_sub"/>
+        </form>
+    </div>
+</div>
+<div id="friend"></div>
+<script>
+    $("#adminheader").load("adminheader");
+    $("#opt_list").load("adsidbar");
+    $("#friend").load("bottombar");
+
+    function selecttopic() {
+        var url = location.href;
+        var topicId = url.split("=")[1];
+        $("[name=topicId]").val(topicId);
+        $.ajax({
+            url: 'topic',
+            data: {"action": "selectTopic", "topicId": topicId},
+            success: function (data) {
+                $("[name=topicName]").val(data.topicName);
+            },
+            error: function () {
+                alert("连接服务器失败！");
+            }
+        });
+    }
+
+    function topicUpdate() {
+        $.ajax({
+            url: 'topic',
+            data: $("#topicModify").serialize(),
+            success: function (data) {
+                if (data === 1) {
+                    selecttopic();
+                    alert("修改成功！");
+                    location.href="/NewsMS3/topiclist";
+                } else if (data === 2) {
+                    alert("此主题下至少有一篇文章不能修改！")
+                }
+            },
+            error: function () {
+                alert("连接服务器失败！");
+            }
+        });
+    }
+</script>
+</body>
+</html>

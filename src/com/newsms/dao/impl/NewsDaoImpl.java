@@ -22,7 +22,7 @@ public class NewsDaoImpl implements NewsDao {
 
     @Override
     public List<News> selectNewsByPage(Integer page, Integer limit) throws SQLException {
-        String sql = "select newsId,newsTitle,publishDate from news limit ?,?";
+        String sql = "select newsId,newsTitle,newsAuthor,publishDate from news limit ?,?";
         PreparedStatement pstm = this.conn.prepareStatement(sql);
         pstm.setInt(1, page);
         pstm.setInt(2, limit);
@@ -31,9 +31,11 @@ public class NewsDaoImpl implements NewsDao {
         while (rs.next()) {
             long newsId = rs.getLong("newsId");
             String newsTitle = rs.getString("newsTitle");
+            String newsauthor = rs.getString("newsAuthor");
             Timestamp publishDate = rs.getTimestamp("publishDate");
             News news = new News();
             news.setNewsid(newsId);
+            news.setNewsauthor(newsauthor);
             news.setNewstitle(newsTitle);
             news.setPublishdate(dateToString(publishDate));
             list.add(news);
@@ -54,17 +56,19 @@ public class NewsDaoImpl implements NewsDao {
 
     @Override
     public News selectNewsByNewsId(Integer newsId) throws SQLException {
-        String sql = "select * from news where newsId=?";
+        String sql = "select newsTitle,newsAuthor,t.topicName,content,publishDate,n.topicId from news n,topic t where n.topicId=t.topicId and newsId=?";
         PreparedStatement pstm = this.conn.prepareStatement(sql);
         pstm.setInt(1, newsId);
         ResultSet rs = pstm.executeQuery();
         News news = new News();
-        rs.next();
-        news.setNewstitle(rs.getString("newsTitle"));
-        news.setNewsauthor(rs.getString("newsAuthor"));
-        news.setContent(rs.getString("content"));
-        news.setPublishdate(rs.getDate("publishDate"));
-        news.setTopicId(rs.getInt("topicId"));
+        while (rs.next()) {
+            news.setNewstitle(rs.getString("newsTitle"));
+            news.setNewsauthor(rs.getString("newsAuthor"));
+            news.setTopicId(rs.getInt("topicId"));
+            news.setTopicName(rs.getString("topicName"));
+            news.setContent(rs.getString("content"));
+            news.setPublishdate(rs.getDate("publishDate"));
+        }
         return news;
     }
 
@@ -132,6 +136,7 @@ public class NewsDaoImpl implements NewsDao {
         pstm.setString(3, news.getContent());
         pstm.setInt(4, news.getTopicId());
         pstm.setLong(5, news.getNewsid());
+        System.out.println(news.getNewsid() + news.getContent() + news.getNewsauthor() + news.getNewstitle() + news.getTopicId());
         int count = pstm.executeUpdate();
         System.out.println("成功修改新闻：:" + count + "条");
         return count;
@@ -165,72 +170,47 @@ public class NewsDaoImpl implements NewsDao {
     public List<News> selectNewsBySearch(Map<String, Object> map) throws SQLException {
         StringBuffer sb = new StringBuffer();
         List<News> newsList = new ArrayList<>();
-        Integer size = map.size();
         ResultSet rs = null;
         //如果map集合里的参数只有两个，就执行这里的代码，因为我默认没搜索条件
-        if (size == 2) {
-            String sql = "select newsId,newsTitle,publishDate from news order by publishDate desc limit ?,? ";
-            PreparedStatement pstm = this.conn.prepareStatement(sql);
+        if (map.size() == 2) {
+            sb.append("select newsId,newsTitle,newsAuthor,publishDate from news order by publishDate desc limit ?,? ");
+            PreparedStatement pstm = this.conn.prepareStatement(sb.toString());
             pstm.setInt(1, (Integer) map.get("page"));
             pstm.setInt(2, (Integer) map.get("limit"));
             rs = pstm.executeQuery();
-            while (rs.next()) {
-                News news = new News();
-                news.setNewsid(rs.getLong("newsId"));
-                news.setNewstitle(rs.getString("newsTitle"));
-                news.setPublishdate(dateToString(rs.getDate("publishDate")));
-                newsList.add(news);
-            }
-            System.out.println("条件查询生成的sql---》》" + sql);
         } else {
-            sb.append("select newsId,newsTitle,publishDate from news");
+            sb.append("select newsId,newsTitle,newsAuthor,publishDate from news where");
             for (String key : map.keySet()) {
-                size--;
-                if (size == map.size() - 1) {
-                    switch (key) {
-                        case "newsTitle":
-                        case "newsAuthor":
-                        case "content":
-                        case "publishDate":
-                            sb.append(" where " + key + " like '%" + map.get(key) + "%'");
-                            break;
-                        case "topicId":
-                            sb.append(" join topic t on news.topicId=t.topicId where t.topicId=" + map.get("topicId"));
-                            break;
-                        default:
-                            break;
-                    }
-                } else {
-                    switch (key) {
-                        case "newsTitle":
-                        case "newsAuthor":
-                        case "content":
-                        case "publishDate":
-                            System.out.println("中间-》 " + key + " 《-条件拼接了");
-                            sb.append(" and " + key + " like '%" + map.get(key) + "%'");
-                            break;
-                        case "topicId":
-                            System.out.println("多表联查topicId-》 " + key + " 《-条件拼接了");
-                            sb.append(" join topic t on news.topicId=t.topicId where t.topicId=" + map.get("topicId"));
-                            break;
-                        default:
-                            break;
-                    }
+                switch (key) {
+                    case "newsTitle":
+                    case "newsAuthor":
+                    case "content":
+                    case "publishDate":
+                        sb.append(" "+key + " like '%" + map.get(key) + "%' and");
+                        break;
+                    case "topicId":
+                        sb.append(" "+key + "=" + map.get(key) + " and");
+                        break;
+                    default:
+                        break;
                 }
             }
+            sb.delete(sb.lastIndexOf("a"), sb.lastIndexOf("a") + 3);
             sb.append(" order by publishDate desc limit " + map.get("page") + "," + map.get("limit"));
-            System.out.println("条件查询生成的sql---》》" + sb);
+            System.out.println("生成sql：" + sb);
             PreparedStatement pstm = this.conn.prepareStatement(sb.toString());
             rs = pstm.executeQuery();
-            while (rs.next()) {
-                News news = new News();
-                news.setNewsid(rs.getLong("newsId"));
-                news.setNewstitle(rs.getString("newsTitle"));
-                news.setPublishdate(rs.getDate("publishDate"));
-                newsList.add(news);
-            }
+        }
+        while (rs.next()) {
+            News news = new News();
+            news.setNewsid(rs.getLong("newsId"));
+            news.setNewstitle(rs.getString("newsTitle"));
+            news.setNewsauthor(rs.getString("newsAuthor"));
+            news.setPublishdate(rs.getDate("publishDate"));
+            newsList.add(news);
         }
         return newsList;
+
     }
 
     @Override
@@ -246,7 +226,6 @@ public class NewsDaoImpl implements NewsDao {
             while (rs.next()) {
                 count = rs.getInt(1);
             }
-            System.out.println("总数量查询生成的sql---》》" + sql);
         } else {
             sb.append("select count(*) from news");
             List list = new ArrayList();
@@ -280,7 +259,6 @@ public class NewsDaoImpl implements NewsDao {
                     }
                 }
             }
-            System.out.println("总数量查询生成的sql---》》" + sb);
             PreparedStatement pstm = this.conn.prepareStatement(sb.toString());
             rs = pstm.executeQuery();
             while (rs.next()) {

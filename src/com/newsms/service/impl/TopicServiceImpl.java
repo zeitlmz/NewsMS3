@@ -22,6 +22,7 @@ public class TopicServiceImpl implements TopicService {
      * 连接辅助类（让连接变为线程安全）
      */
     private static ConnectionUtils con = new ConnectionUtils();
+
     static {
         //向连接辅助类传递一个从JNDI获取的dataSource
         con.setDataSource(DBUtils.getDataSource());
@@ -36,7 +37,7 @@ public class TopicServiceImpl implements TopicService {
             topics = topicDao.selectTopicList();
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             con.removeConnection();
         }
         return topics;
@@ -51,8 +52,8 @@ public class TopicServiceImpl implements TopicService {
                 return true;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
+            return false;
+        } finally {
             con.removeConnection();
         }
         return false;

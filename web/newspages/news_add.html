@@ -1,0 +1,44 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>添加新闻</title>
+    <link href="./css/admin.css" rel="stylesheet" type="text/css"/>
+    <script src="./js/jquery-3.4.1.min.js"></script>
+
+</head>
+<body>
+<div id="adminheader"></div>
+<div id="container">
+    <div id="opt_list"></div>
+    <div id="opt_area">
+        <h1 id="opt_type"> 添加新闻： </h1>
+        <form id="newsaddForm">
+            <input type="hidden" name="action" value="newsadd">
+            <p>
+                <label> 主题 &nbsp;</label>
+                <select id="topics" name="topicId"></select>
+            </p>
+            <p>
+                <label> 标题 </label>
+                <input name="newsTitle" type="text" required class="opt_input" style="width: 300px;"/>
+            </p>
+            <p>
+                <label> 作者 </label>
+                <input name="newsAuthor" type="text" required class="opt_input" style="width:100px"/>
+            </p>
+            <label> 内容: </label>
+            <p>
+                <textarea name="content" cols="120" required rows="20"></textarea>
+            </p>
+            <!--            <p><label> 图片: </label>-->
+            <!--                <input type="file" name="pic">-->
+            <!--            </p>-->
+            <button id="addNews" class="opt_sub">添加</button>
+            <input type="reset" value="重置" class="opt_sub"/>
+        </form>
+    </div>
+</div>
+<div id="friend"></div>
+<script src="./js/newsadd.js"></script>
+</body>
+</html>

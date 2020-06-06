@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet("/admin")
+@WebServlet("/account")
 public class AdminController extends HttpServlet {
     private NewsService newsService = new NewsServiceImpl();
     private TopicService topicService = new TopicServiceImpl();
@@ -102,19 +102,19 @@ public class AdminController extends HttpServlet {
             map = (Map<String, Object>) request.getSession().getAttribute("searchInfo");
         }
 
-        if (ObjectEmpty.isNotEmpty(newsTitle)) {
+        if (ObjectEmpty.isEmpty(newsTitle)) {
             map.put("newsTitle", newsTitle);
         }
-        if (ObjectEmpty.isNotEmpty(newsAuthor)) {
+        if (ObjectEmpty.isEmpty(newsAuthor)) {
             map.put("newsAuthor", newsAuthor);
         }
-        if (ObjectEmpty.isNotEmpty(content)) {
+        if (ObjectEmpty.isEmpty(content)) {
             map.put("content", content);
         }
-        if (ObjectEmpty.isNotEmpty(publishDate)) {
+        if (ObjectEmpty.isEmpty(publishDate)) {
             map.put("publishDate", publishDate);
         }
-        if (ObjectEmpty.isNotEmpty(topicId)) {
+        if (ObjectEmpty.isEmpty(topicId)) {
             map.put("topicId", topicId);
         }
 
@@ -127,7 +127,7 @@ public class AdminController extends HttpServlet {
         String a = gson.toJson(pages);
         out.write(a);
         request.getSession().setAttribute("adminNews", pages);
-        request.getRequestDispatcher("newspages/admin.jsp").forward(request, response);
+        request.getRequestDispatcher("newspages/admin.html").forward(request, response);
     }
 
     public void updateNews(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -147,10 +147,10 @@ public class AdminController extends HttpServlet {
         Writer out = response.getWriter();
         if (newsService.updateNews(news)) {
             out.write("<h2>修改成功！</h2>");
-            out.write("<a href='admin.jsp?page=1&limit=5'>点击回到主页</a>");
+            out.write("<a href='admin.html?page=1&limit=5'>点击回到主页</a>");
         } else {
             out.write("<h2>修改失败！</h2>");
-            out.write("<a href='admin.jsp?page=1&limit=5'>点击回到主页</a>");
+            out.write("<a href='admin.html?page=1&limit=5'>点击回到主页</a>");
         }
     }
 
@@ -233,7 +233,7 @@ public class AdminController extends HttpServlet {
         } else {
             out.write("<h2>添加失败！</h2>");
         }
-        out.write("<a href='admin.jsp?page=1&limit=5'>点击回到主页</a>");
+        out.write("<a href='admin.html?page=1&limit=5'>点击回到主页</a>");
     }
 
     public void delNewsByNewsId(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

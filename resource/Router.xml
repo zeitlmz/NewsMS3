@@ -1,53 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <routers>
+    <!--配置页面跳转路由-->
     <router>
-        <url>index</url>
-        <filter></filter>
-        <controller>/login</controller>
+        <name>index</name>
+        <hasFilter>false</hasFilter>
+        <pagePath>/index.html</pagePath>
     </router>
     <router>
-        <url>admin</url>
-        <filter>UriFilter</filter>
-        <controller>/login</controller>
+        <name>admin</name>
+        <hasFilter>true</hasFilter>
+        <pagePath>/newspages/admin.html</pagePath>
     </router>
     <router>
-        <url>login</url>
-        <filter>login</filter>
-        <controller>/login</controller>
+        <name>login</name>
+        <hasFilter>false</hasFilter>
+        <pagePath>/index.html</pagePath>
     </router>
     <router>
-        <url>login</url>
-        <filter>login</filter>
-        <controller>/login</controller>
+        <name>newsread</name>
+        <hasFilter>false</hasFilter>
+        <pagePath>/news_read.html</pagePath>
     </router>
     <router>
-        <url>login</url>
-        <filter>login</filter>
-        <controller>/login</controller>
+        <name>logout</name>
+        <hasFilter>true</hasFilter>
+        <pagePath>/index.html</pagePath>
     </router>
     <router>
-        <url>login</url>
-        <filter>login</filter>
-        <controller>/login</controller>
+        <name>newsadd</name>
+        <hasFilter>true</hasFilter>
+        <pagePath>/newspages/news_add.html</pagePath>
     </router>
     <router>
-        <url>login</url>
-        <filter>login</filter>
-        <controller>/login</controller>
+        <name>newsmodify</name>
+        <hasFilter>true</hasFilter>
+        <pagePath>/newspages/news_modify.html</pagePath>
     </router>
     <router>
-        <url>login</url>
-        <filter>login</filter>
-        <controller>/login</controller>
+        <name>topicadd</name>
+        <hasFilter>true</hasFilter>
+        <pagePath>/newspages/topic_add.html</pagePath>
     </router>
     <router>
-        <url>login</url>
-        <filter>login</filter>
-        <controller>/login</controller>
+        <name>topiclist</name>
+        <hasFilter>true</hasFilter>
+        <pagePath>/newspages/topic_list.html</pagePath>
     </router>
     <router>
-        <url>login</url>
-        <filter>login</filter>
-        <controller>/login</controller>
+        <name>topicmodify</name>
+        <hasFilter>true</hasFilter>
+        <pagePath>/newspages/topic_modify.html</pagePath>
+    </router>
+    <!--    配置引入页面-->
+    <router>
+        <name>adminheader</name>
+        <hasFilter>true</hasFilter>
+        <pagePath>/newspages/console_element/adminheader.html</pagePath>
+    </router>
+    <router>
+        <name>sidebar</name>
+        <hasFilter>false</hasFilter>
+        <pagePath>/index-elements/index_sidebar.html</pagePath>
+    </router>
+    <router>
+        <name>bottombar</name>
+        <hasFilter>false</hasFilter>
+        <pagePath>/index-elements/index_bottom.html</pagePath>
+    </router>
+    <router>
+        <name>adsidbar</name>
+        <hasFilter>false</hasFilter>
+        <pagePath>/newspages/console_element/adsidbar.html</pagePath>
+    </router>
+    <!--配置ajax类型路由-->
+    <router>
+        <name>news</name>
+        <hasFilter>false</hasFilter>
+        <reqType>ajax</reqType>
+    </router>
+    <router>
+        <name>user</name>
+        <hasFilter>false</hasFilter>
+        <reqType>ajax</reqType>
+    </router>
+    <router>
+        <name>topic</name>
+        <hasFilter>false</hasFilter>
+        <reqType>ajax</reqType>
+    </router>
+    <!--配置静态资源路由-->
+    <router>
+        <name>js</name>
+        <reqType>static</reqType>
+    </router>
+    <router>
+        <name>images</name>
+        <reqType>static</reqType>
+    </router>
+    <router>
+        <name>css</name>
+        <reqType>static</reqType>
+    </router>
+    <router>
+        <name>index-elements</name>
+        <reqType>static</reqType>
+    </router>
+    <router>
+        <name>newspages</name>
+        <reqType>static</reqType>
+    </router>
+    <router>
+        <name>upload</name>
+        <reqType>static</reqType>
     </router>
 </routers>

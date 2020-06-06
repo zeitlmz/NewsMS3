@@ -1,5 +1,6 @@
 package com.newsms.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.newsms.entity.News;
 import com.newsms.entity.Page;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
@@ -28,8 +30,6 @@ import java.util.Map;
 public class NewsServlet extends HttpServlet {
     private NewsService newsService = new NewsServiceImpl();
     private TopicService topicService = new TopicServiceImpl();
-    private Integer currPage = 1;
-    private Integer limit = 10;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -38,77 +38,62 @@ public class NewsServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String action=req.getParameter("actioon");
-        if ("".equals(action)){
-
-        }else if ("".equals(action)){
-
-        }else if ("".equals(action)){
-
-        }else if ("".equals(action)){
-
-        }else if ("".equals(action)){
-
-        }else if ("".equals(action)){
-
-        }else if ("".equals(action)){
-
-        }else if ("".equals(action)){
-
-        }else if ("".equals(action)){
-
-        }else if ("".equals(action)){
-
-        }else if ("".equals(action)){
-
-        }else if ("".equals(action)){
-
+        String method = req.getParameter("action");
+        if ("newsRead".equals(method)) {
+            newsRead(req, resp);
+        } else if ("sideNewsList".equals(method)) {
+            sideNewsList(req, resp);
+        } else if ("newsadd".equals(method)) {
+            newsAdd(req, resp);
+        } else if ("adnewsRead".equals(method)) {
+            adnewsRead(req, resp);
+        } else if ("searchNews".equals(method)) {
+            searchNews(req, resp);
+        } else if ("newsPage".equals(method)) {
+            newsByPage(req, resp);
+        } else if ("delete".equals(method)) {
+            delNewsByNewsId(req, resp);
+        } else if ("newsmodify".equals(method)) {
+            updateNews(req, resp);
+        } else {
+            req.getRequestDispatcher("/404.html").forward(req, resp);
         }
     }
 
-    //主页内容，新闻列表：国际，国内，娱乐
-    public void index(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Page page = null;
-
-        if (request.getSession().getAttribute("indexNews") == null) {
-            page = selectNewsByPage(1, 10);
-        }
-
-        request.getSession().setAttribute("gn", selectNewsByTopicId(1));
-        request.getSession().setAttribute("gj", selectNewsByTopicId(2));
-        request.getSession().setAttribute("yl", selectNewsByTopicId(3));
-
-        request.getSession().setAttribute("topicList", selectTopicList());
-        request.getSession().setAttribute("indexNews", page);
-
-        request.getRequestDispatcher("index.jsp").forward(request, response);
+    //侧边栏新闻列表：国际，国内，娱乐
+    public void sideNewsList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json;charset=utf-8");
+        Page pages = selectNewsByPage(1, 10);
+        Map<String, Object> map = new HashMap<>();
+        map.put("gn", selectNewsByTopicId(1));
+        map.put("gj", selectNewsByTopicId(2));
+        map.put("yl", selectNewsByTopicId(3));
+        String data = JSON.toJSONString(map);
+        PrintWriter out = response.getWriter();
+        out.write(data);
     }
+
 
     public void searchNews(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getSession().removeAttribute("searchInfo");
-        searchNewsByPage(request, response);
+        newsByPage(request, response);
     }
 
-    public void searchNewsByPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void newsByPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json;charset=utf-8");
         String newsTitle = request.getParameter("newsTitle");
         String newsAuthor = request.getParameter("newsAuthor");
         String content = request.getParameter("content");
         String publishDate = request.getParameter("publishDate");
         String topicId = request.getParameter("topicId");
 
-        String currPages = request.getParameter("pageIndex");
-        String limit = request.getParameter("limit");
-
-        if (currPages != null) {
-            this.currPage = Integer.parseInt(currPages);
+        String currPages = request.getParameter("currPage");
+        if (currPages == null) {
+            currPages = "1";
         }
-        if (limit != null) {
-            this.limit = Integer.parseInt(limit);
-        } else {
-            this.limit = 10;
-        }
+        Integer pageIndex = Integer.parseInt(currPages);
+        Integer limit = 10;
 
-        System.out.println(newsTitle + newsAuthor + content + publishDate + topicId);
         Map<String, Object> map = null;
         if (request.getSession().getAttribute("searchInfo") == null) {
             map = new HashMap<>();
@@ -116,28 +101,29 @@ public class NewsServlet extends HttpServlet {
             map = (Map<String, Object>) request.getSession().getAttribute("searchInfo");
         }
 
-        if (ObjectEmpty.isNotEmpty(newsTitle)) {
+        if (!ObjectEmpty.isEmpty(newsTitle)) {
             map.put("newsTitle", newsTitle);
         }
-        if (ObjectEmpty.isNotEmpty(newsAuthor)) {
+        if (!ObjectEmpty.isEmpty(newsAuthor)) {
             map.put("newsAuthor", newsAuthor);
         }
-        if (ObjectEmpty.isNotEmpty(content)) {
+        if (!ObjectEmpty.isEmpty(content)) {
             map.put("content", content);
         }
-        if (ObjectEmpty.isNotEmpty(publishDate)) {
+        if (!ObjectEmpty.isEmpty(publishDate)) {
             map.put("publishDate", publishDate);
         }
-        if (ObjectEmpty.isNotEmpty(topicId)) {
+        if (!ObjectEmpty.isEmpty(topicId)) {
             map.put("topicId", topicId);
         }
 
-        map.put("limit", this.limit);
-        map.put("page", this.currPage);
+        map.put("limit", limit);
+        map.put("page", pageIndex);
         request.getSession().setAttribute("searchInfo", map);
         Page pages = newsService.searchNews(map);
-        request.getSession().setAttribute("indexNews", pages);
-        request.getRequestDispatcher("index.jsp").forward(request, response);
+        PrintWriter out = response.getWriter();
+        String s = JSON.toJSONString(pages);
+        out.write(s);
     }
 
 
@@ -146,17 +132,32 @@ public class NewsServlet extends HttpServlet {
     }
 
     public Page selectNewsByPage(Integer currPage, Integer limit) {
-        Gson gson = new Gson();
-        Page page = newsService.selectNewsByPage(currPage, limit);
-        return page;
+        return newsService.selectNewsByPage(currPage, limit);
     }
 
     public void newsRead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json;charset=utf-8");
         int newsId = Integer.parseInt(request.getParameter("newsid"));
-        Gson gson = new Gson();
         News news = newsService.selectNewsByNewsId(newsId);
-        request.getSession().setAttribute("newsread", news);
-        request.getRequestDispatcher("news_read.jsp").forward(request, response);
+        PrintWriter out = response.getWriter();
+        String s = JSON.toJSONString(news);
+        out.write(s);
+    }
+
+    public void adnewsRead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json;charset=utf-8");
+        int newsId = Integer.parseInt(request.getParameter("newsid"));
+        System.out.println("读取新闻id：" + newsId);
+        News news = newsService.selectNewsByNewsId(newsId);
+        if (!ObjectEmpty.isEmpty(news)) {
+            PrintWriter out = response.getWriter();
+            Map<String, Object> map = new HashMap<>();
+            List<Topic> topics = selectTopicList();
+            map.put("news", news);
+            map.put("topics", topics);
+            String s = JSON.toJSONString(map);
+            out.write(s);
+        }
     }
 
     public List<News> selectNewsByTopicId(Integer topicId) {
@@ -172,5 +173,44 @@ public class NewsServlet extends HttpServlet {
         String a = gson.toJson(page);
         Writer out = response.getWriter();
         out.write(a);
+    }
+
+    public void updateNews(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        String s1 = JSON.toJSONString(parameterMap);
+        String s2 = s1.replace("[", "");
+        String s3 = s2.replace("]", "");
+        News news = JSON.parseObject(s3, News.class);
+        boolean b = newsService.updateNews(news);
+        String s = JSON.toJSONString(b);
+        out.write(s);
+    }
+
+    public void newsAdd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        String s1 = JSON.toJSONString(parameterMap);
+        String s2 = s1.replace("[", "");
+        String s3 = s2.replace("]", "");
+        News news = JSON.parseObject(s3, News.class);
+        boolean b = newsService.addNews(news);
+        String s = JSON.toJSONString(b);
+        out.write(s);
+    }
+
+    public void delNewsByNewsId(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String str = request.getParameter("newsid");
+        response.setContentType("application/json;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        if (str != null) {
+            boolean b = newsService.delNewsByNewsId(Integer.parseInt(str));
+            String s = JSON.toJSONString(b);
+            out.write(s);
+        } else {
+            out.write("false");
+        }
     }
 }

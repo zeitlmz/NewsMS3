@@ -1,0 +1,29 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>添加主题--管理后台</title>
+    <link href="./css/admin.css" rel="stylesheet" type="text/css"/>
+    <script src="./js/jquery-3.4.1.min.js"></script>
+
+</head>
+<body>
+<div id="adminheader"></div>
+<div id="container">
+    <div id="opt_list"></div>
+    <div id="opt_area">
+        <h1 id="opt_type"> 添加主题： </h1>
+        <form id="topicAddForm">
+            <p>
+                <label> 主题名称 </label>
+                <input type="hidden" name="action" value="topicadd">
+                <input name="topicName" type="text" class="opt_input" id="tname"/>
+            </p>
+            <button id="addTopic" class="opt_sub">添加</button>
+            <input type="reset" value="重置" class="opt_sub"/>
+        </form>
+    </div>
+</div>
+<div id="friend"></div>
+<script src="./js/topicAdd.js"></script>
+</body>
+</html>

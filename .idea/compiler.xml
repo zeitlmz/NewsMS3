@@ -5,7 +5,7 @@
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
     <bytecodeTargetLevel target="9">
-      <module name="NewsMS3" target="9" />
+      <module name="NewsMS3" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -9,6 +9,12 @@ body {
     font: 12px/20px Tahoma;
 }
 
+#container {
+    margin: auto;
+    width: 947px;
+    height: auto;
+}
+
 table {
     border-collapse: collapse;
 }
@@ -124,7 +130,7 @@ a:hover {
 }
 
 #opt_area {
-    float: right;
+    float: left;
     width: 770px;
     margin: 14px 0 0 0;
 }

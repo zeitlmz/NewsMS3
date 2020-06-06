@@ -26,11 +26,13 @@ public class AuthorDaoImpl implements AuthorDao {
         pstm.setString(2, pwd);
         ResultSet rs = pstm.executeQuery();
         Author author = new Author();
-        while (rs.next()) {
+        if (rs.next()) {
             author.setUserName(rs.getString("userName"));
             author.setRealName(rs.getString("realName"));
             author.setImageUrl(rs.getString("imageUrl"));
+            return author;
+        } else {
+            return null;
         }
-        return author;
     }
 }

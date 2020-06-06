@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="39.101.143.4-tomcat">
+  <component name="PublishConfigData">
     <serverData>
       <paths name="39.101.143.4-tomcat">
         <serverdata>
           <mappings>
-            <mapping deploy="/" local="$PROJECT_DIR$/out/artifacts/NewsMS3_war" web="/" />
+            <mapping deploy="/" local="$PROJECT_DIR$/out/artifacts/NewsMS3_archive" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="esc服务器">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

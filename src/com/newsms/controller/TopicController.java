@@ -1,6 +1,6 @@
 package com.newsms.controller;
 
-import com.google.gson.Gson;
+import com.alibaba.fastjson.JSON;
 import com.newsms.entity.Topic;
 import com.newsms.service.TopicService;
 import com.newsms.service.impl.TopicServiceImpl;
@@ -29,87 +29,66 @@ public class TopicController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String action = req.getParameter("actioon");
-        if ("".equals(action)) {
-
-        } else if ("".equals(action)) {
-
-        } else if ("".equals(action)) {
-
-        } else if ("".equals(action)) {
-
-        } else if ("".equals(action)) {
-
-        } else if ("".equals(action)) {
-
-        } else if ("".equals(action)) {
-
-        } else if ("".equals(action)) {
-
-        } else if ("".equals(action)) {
-
-        } else if ("".equals(action)) {
-
-        } else if ("".equals(action)) {
-
-        } else if ("".equals(action)) {
-
+        String method = req.getParameter("action");
+        if ("topics".equals(method)) {
+            selectTopicList(req, resp);
+        } else if ("topicadd".equals(method)) {
+            addTopic(req, resp);
+        } else if ("topicmodify".equals(method)) {
+            updateTopic(req, resp);
+        } else if ("topicdel".equals(method)) {
+            delTopic(req, resp);
+        } else if ("selectTopic".equals(method)) {
+            selectTopicByid(req, resp);
+        } else {
+            req.getRequestDispatcher("/404.html").forward(req, resp);
         }
     }
 
     public void selectTopicList(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Gson gson = new Gson();
+        response.setContentType("application/json;charset=utf-8");
         List<Topic> list = topicService.selectTopicList();
-        request.getSession().setAttribute("topicList", list);
-        String a = gson.toJson(list);
         Writer out = response.getWriter();
-        out.write(a);
-//        response.sendRedirect("index.jsp");
+        String s = JSON.toJSONString(list);
+        out.write(s);
     }
 
     public void addTopic(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json;charset=utf-8");
         String topicName = request.getParameter("topicName");
         TopicService topicService = new TopicServiceImpl();
         Writer out = response.getWriter();
-        if (topicService.addTopic(topicName)) {
-            out.write("<h2>添加成功！</h2>");
-        } else {
-            out.write("<h2>添加失败！</h2>");
-        }
-        out.write("<a href='topic_list.jsp'>返回主题列表</a>");
+        boolean b = topicService.addTopic(topicName);
+        String s = JSON.toJSONString(b);
+        out.write(s);
     }
 
     public void delTopic(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json;charset=utf-8");
         int topicId = Integer.parseInt(request.getParameter("topicId"));
-        int flag = topicService.delTopic(topicId);
         Writer writer = response.getWriter();
-        if (flag == 1) {
-            response.sendRedirect("topic_list.jsp");
-        } else if (flag == 0) {
-            writer.write("<h2>删除失败</h2><br><a href='topic_list.jsp'>点击回到主题列表</a>");
-        } else if (flag == 2) {
-            writer.write("<h2>该主题下至少有一篇新闻不能删除！</h2><br><a href='topic_list.jsp'>点击回到主题列表</a>");
-        }
+        Writer out = response.getWriter();
+        int b = topicService.delTopic(topicId);
+        String s = JSON.toJSONString(b);
+        out.write(s);
     }
 
     public void updateTopic(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json;charset=utf-8");
         int topicId = Integer.parseInt(request.getParameter("topicId"));
-        String newTopic = request.getParameter("newTopic");
-        int flag = topicService.updateTopic(topicId, newTopic);
-        Writer writer = response.getWriter();
-        if (flag > 0) {
-            response.sendRedirect("topic_list.jsp");
-        } else {
-            writer.write("<h2>更新失败</h2><br><a href='topic_list.jsp'>点击回到主题列表</a>");
-        }
+        String newTopic = request.getParameter("topicName");
+        Writer out = response.getWriter();
+        int b = topicService.updateTopic(topicId, newTopic);
+        String s = JSON.toJSONString(b);
+        out.write(s);
     }
 
     public void selectTopicByid(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json;charset=utf-8");
         int topicId = Integer.parseInt(request.getParameter("topicId"));
         Topic topic = topicService.selectTopicByid(topicId);
-        Gson gson = new Gson();
-        String a = gson.toJson(topic);
-        Writer writer = response.getWriter();
-        writer.write(a);
+        Writer out = response.getWriter();
+        String s = JSON.toJSONString(topic);
+        out.write(s);
     }
 }

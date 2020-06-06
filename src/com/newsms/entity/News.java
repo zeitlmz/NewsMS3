@@ -19,6 +19,8 @@ public class News {
     private Object publishdate;
     //分类
     private Integer topicId;
+    //话题名称
+    private String topicName;
     //图片
     private String picture;
 
@@ -28,6 +30,28 @@ public class News {
 
     public void setPicture(String picture) {
         this.picture = picture;
+    }
+
+    public String getTopicName() {
+        return topicName;
+    }
+
+    @Override
+    public String toString() {
+        return "News{" +
+                "newsid=" + newsid +
+                ", newstitle='" + newstitle + '\'' +
+                ", newsauthor='" + newsauthor + '\'' +
+                ", content='" + content + '\'' +
+                ", publishdate=" + publishdate +
+                ", topicId=" + topicId +
+                ", topicName=" + topicName +
+                ", picture='" + picture + '\'' +
+                '}';
+    }
+
+    public void setTopicName(String topicName) {
+        this.topicName = topicName;
     }
 
     public Long getNewsid() {
@@ -78,15 +102,4 @@ public class News {
         this.topicId = topicId;
     }
 
-    @Override
-    public String toString() {
-        return "News{" +
-                "newsid=" + newsid +
-                ", newstitle='" + newstitle + '\'' +
-                ", newsauthor='" + newsauthor + '\'' +
-                ", content='" + content + '\'' +
-                ", publishdate=" + publishdate +
-                ", topicId='" + topicId + '\'' +
-                '}';
-    }
 }
