@@ -12,7 +12,6 @@
     <div id="top_login">
         <form id="loginform">
             <label> 登录名 </label>
-            <input type="hidden" name="action" value="login">
             <input type="text" name="uname" required value=""/>
             <label> 密&#160;&#160;码 </label>
             <input type="password" name="pwd" required value=""/>
@@ -33,19 +32,18 @@
         <div class="content">
             <h1 id="opt_type"> 搜索新闻 </h1>
             <form id="searchNews">
-                <input type="hidden" name="action" value="searchNews">
                 <table>
                     <tr>
                         <td><label>新闻标题</label></td>
-                        <td><input type="text" name="newsTitle" placeholder="输入搜素内容"></td>
+                        <td><input type="text" name="newstitle" placeholder="输入搜素内容"></td>
                         <td><label>作者</label></td>
-                        <td><input type="text" name="newsAuthor" placeholder="输入搜素内容"></td>
+                        <td><input type="text" name="newsauthor" placeholder="输入搜素内容"></td>
                     </tr>
                     <tr>
                         <td><label>内容</label></td>
                         <td><input type="text" name="content" placeholder="输入搜素内容"></td>
                         <td><label>发布时间</label></td>
-                        <td><input type="text" name="publishDate" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})">
+                        <td><input type="text" name="publishdate" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})">
                         </td>
                     </tr>
                     <tr>
@@ -73,6 +71,6 @@
     </div>
 </div>
 <div id="bottmbar"></div>
-<script src="./js/searchNews.js"></script>
+<script src="./js/index.js"></script>
 </body>
 </html>

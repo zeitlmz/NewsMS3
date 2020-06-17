@@ -2,6 +2,11 @@
 <routers>
     <!--配置页面跳转路由-->
     <router>
+        <name>TestConvert</name>
+        <hasFilter>false</hasFilter>
+        <pagePath>/TestConvert.html</pagePath>
+    </router>
+    <router>
         <name>index</name>
         <hasFilter>false</hasFilter>
         <pagePath>/index.html</pagePath>
@@ -77,16 +82,19 @@
         <name>news</name>
         <hasFilter>false</hasFilter>
         <reqType>ajax</reqType>
+        <controller>com.newsms.controller.NewsServlet</controller>
     </router>
     <router>
         <name>user</name>
         <hasFilter>false</hasFilter>
         <reqType>ajax</reqType>
+        <controller>com.newsms.controller.AuthorServlet</controller>
     </router>
     <router>
         <name>topic</name>
         <hasFilter>false</hasFilter>
         <reqType>ajax</reqType>
+        <controller>com.newsms.controller.TopicController</controller>
     </router>
     <!--配置静态资源路由-->
     <router>

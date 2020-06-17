@@ -41,7 +41,6 @@ public class TopicDaoImpl implements TopicDao {
         PreparedStatement pstm = this.conn.prepareStatement(sql);
         pstm.setString(1, topicName);
         int count=pstm.executeUpdate();
-        System.out.println("成功添加主题：:"+count+"个");
         return count;
     }
 
@@ -52,7 +51,6 @@ public class TopicDaoImpl implements TopicDao {
         PreparedStatement pstm = this.conn.prepareStatement(sql);
         pstm.setInt(1, topicId);
         int count=pstm.executeUpdate();
-        System.out.println("成功删除主题：:"+count+"个");
         return count;
     }
 
@@ -63,7 +61,6 @@ public class TopicDaoImpl implements TopicDao {
         pstm.setString(1, newTopic);
         pstm.setInt(2, topicId);
         int count=pstm.executeUpdate();
-        System.out.println("成功修改主题：:"+count+"个");
         return count;
     }
 

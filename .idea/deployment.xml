@@ -2,17 +2,10 @@
 <project version="4">
   <component name="PublishConfigData">
     <serverData>
-      <paths name="39.101.143.4-tomcat">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/" local="$PROJECT_DIR$/out/artifacts/NewsMS3_archive" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
       <paths name="esc服务器">
         <serverdata>
           <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/www/server/tomcat9/webapps" local="$PROJECT_DIR$/out/artifacts/NewsMS3_archive" web="/" />
           </mappings>
         </serverdata>
       </paths>

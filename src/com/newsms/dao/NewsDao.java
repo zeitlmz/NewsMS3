@@ -1,5 +1,6 @@
 package com.newsms.dao;
 
+import com.newsms.entity.Comments;
 import com.newsms.entity.News;
 
 import java.sql.SQLException;
@@ -38,6 +39,12 @@ public interface NewsDao {
      */
     News selectNewsByNewsId(Integer newsId) throws SQLException;
 
+    /**
+     * 查询某条新闻下的所有评论
+     * @param newsId 新闻id
+     * @return 评论列表
+     */
+    List<Comments> selectNewsCommByNewsId(Integer newsId) throws SQLException;
     /**
      * 通过newId查询新闻
      *
@@ -101,7 +108,7 @@ public interface NewsDao {
      * @return 添加成功数量
      * @throws SQLException sql异常
      */
-    int addNews(News news) throws SQLException;
+    Integer addNews(News news) throws SQLException;
 
     /**
      * 通过新闻编号删除该新闻
@@ -110,5 +117,12 @@ public interface NewsDao {
      * @return 删除成功的数量
      * @throws SQLException sql异常
      */
-    int delNewsByNewsId(Integer newsId) throws SQLException;
+    Integer delNewsByNewsId(Integer newsId) throws SQLException;
+
+    /**
+     * 添加评论
+     * @param  comments 评论信息对象
+     * @return 成功数量
+     */
+    Integer addComm(Comments comments) throws SQLException;
 }

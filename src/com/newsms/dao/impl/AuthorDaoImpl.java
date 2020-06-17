@@ -18,6 +18,9 @@ public class AuthorDaoImpl implements AuthorDao {
         this.conn = conn;
     }
 
+    public AuthorDaoImpl() {
+    }
+
     @Override
     public Author login(String userName, String pwd) throws SQLException {
         String sql = "select * from author where userName=? and pwd=?";

@@ -2,12 +2,11 @@ package com.newsms.service.impl;
 
 import com.newsms.dao.NewsDao;
 import com.newsms.dao.impl.NewsDaoImpl;
+import com.newsms.entity.Comments;
 import com.newsms.entity.News;
 import com.newsms.entity.Page;
 import com.newsms.service.NewsService;
-import com.newsms.util.ConnectionUtils;
-import com.newsms.util.DBUtils;
-import com.newsms.util.TransactionManager;
+import com.newsms.util.TM;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -21,73 +20,44 @@ import java.util.Map;
  * @since 2020-04-10 10:26:33
  */
 public class NewsServiceImpl implements NewsService {
-    /**
-     * 连接辅助类（让连接变为线程安全）
-     */
-    private static ConnectionUtils con;
-    /**
-     * 事务管理辅助类
-     */
-    private static TransactionManager transactionManager;
-
-    static {
-        con = new ConnectionUtils();
-        //向连接辅助类传递一个从JNDI获取的dataSource
-        con.setDataSource(DBUtils.getDataSource());
-    }
+    private NewsDao newsDao;
 
     @Override
-    public Page selectNewsByPage(Integer currPage, Integer limit) {
+    public Page selectNewsByPage(Integer currPage, Integer limit) throws SQLException {
+        newsDao = new NewsDaoImpl(TM.getConn());
         Page pages = new Page();
-        //把从连接辅助类经过线程安全化处理的conn连接传给dao层
-        NewsDao newsDao = new NewsDaoImpl(con.getThreadConnection());
         pages.setLimit(limit);
-        try {
-            pages.setCount(newsDao.selectCount());
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-        }
+        pages.setCount(getNewsCount());
         if (currPage > pages.getCount()) {
             currPage = pages.getCount();
         }
         pages.setPage(currPage);
-        List<News> news = null;
-        try {
-            news = newsDao.selectNewsByPage((currPage - 1) * limit, limit);
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-        }
+        List<News> news = newsDao.selectNewsByPage((currPage - 1) * limit, limit);
         pages.setData(news);
         return pages;
     }
 
-    @Override
-    public News selectNewsByNewsId(Integer newsId) {
-        News news = null;
-        //把从连接辅助类经过线程安全化处理的conn连接传给dao层
-        NewsDao newsDao = new NewsDaoImpl(con.getThreadConnection());
-        try {
-            news = newsDao.selectNewsByNewsId(newsId);
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-        }
-        return news;
+    private Integer getNewsCount() throws SQLException {
+        newsDao = new NewsDaoImpl(TM.getConn());
+        return newsDao.selectCount();
     }
 
     @Override
-    public List<News> selectNewsByTopicId(Integer topicId) {
-        List<News> news = null;
-        //把从连接辅助类经过线程安全化处理的conn连接传给dao层
-        NewsDao newsDao = new NewsDaoImpl(con.getThreadConnection());
-        try {
-            news = newsDao.selectNewsByTopicId(topicId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return news;
+    public News selectNewsByNewsId(Integer newsId) throws SQLException {
+        newsDao = new NewsDaoImpl(TM.getConn());
+        return newsDao.selectNewsByNewsId(newsId);
+    }
+
+    @Override
+    public List<Comments> selectCommByNewsId(Integer newsId) throws SQLException {
+        newsDao = new NewsDaoImpl(TM.getConn());
+        return newsDao.selectNewsCommByNewsId(newsId);
+    }
+
+    @Override
+    public List<News> selectNewsByTopicId(Integer topicId) throws SQLException {
+        newsDao = new NewsDaoImpl(TM.getConn());
+        return newsDao.selectNewsByTopicId(topicId);
     }
 
     /**
@@ -99,39 +69,24 @@ public class NewsServiceImpl implements NewsService {
      * @return 新闻列表
      */
     @Override
-    public Page selectNewsByRealName(Integer currPage, Integer limit, String newsAuthor) {
-
-        //把从连接辅助类经过线程安全化处理的conn连接传给dao层
-        NewsDao newsDao = new NewsDaoImpl(con.getThreadConnection());
+    public Page selectNewsByRealName(Integer currPage, Integer limit, String newsAuthor) throws SQLException {
+        newsDao = new NewsDaoImpl(TM.getConn());
         Page pages = new Page();
         pages.setLimit(limit);
-        try {
-            pages.setCount(newsDao.selectCountByNewsAuthor(newsAuthor));
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-        }
+        pages.setCount(newsDao.selectCountByNewsAuthor(newsAuthor));
         if (currPage > pages.getCount()) {
             currPage = pages.getCount();
         }
         pages.setPage(currPage);
         List<News> list = null;
-        try {
-            list = newsDao.selectNewsByRealName((currPage - 1) * limit, limit, newsAuthor);
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-        }
+        list = newsDao.selectNewsByRealName((currPage - 1) * limit, limit, newsAuthor);
         pages.setData(list);
-
         return pages;
     }
 
     @Override
-    public Page searchNews(Map<String, Object> map) {
-
-        //把从连接辅助类经过线程安全化处理的conn连接传给dao层
-        NewsDao newsDao = new NewsDaoImpl(con.getThreadConnection());
+    public Page searchNews(Map<String, Object> map) throws SQLException {
+        newsDao = new NewsDaoImpl(TM.getConn());
         Page pages = new Page();
         pages.setLimit((Integer) map.get("limit"));
         Map<String, Object> map1 = new HashMap<>();
@@ -141,12 +96,7 @@ public class NewsServiceImpl implements NewsService {
         map1.remove("page");
         map1.remove("limit");
         Integer count = null;
-        try {
-            count = newsDao.selectCountBySearch(map1);
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-        }
+        count = newsDao.selectCountBySearch(map1);
         pages.setCount(count);
         if ((Integer) map.get("page") > pages.getCount() & pages.getCount() > 0) {
             map.put("page", pages.getCount());
@@ -156,55 +106,32 @@ public class NewsServiceImpl implements NewsService {
         pages.setPage((Integer) map.get("page"));
         map.put("page", ((Integer) map.get("page") - 1) * (Integer) map.get("limit"));
         List<News> list = null;
-        try {
-            list = newsDao.selectNewsBySearch(map);
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-        }
+        list = newsDao.selectNewsBySearch(map);
         pages.setData(list);
         return pages;
     }
 
     @Override
-    public boolean updateNews(News news) {
-        //把从连接辅助类经过线程安全化处理的conn连接传给dao层
-        NewsDao newsDao = new NewsDaoImpl(con.getThreadConnection());
-        try {
-            if (newsDao.updateNews(news) == 0) {
-                return false;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return true;
+    public boolean updateNews(News news) throws SQLException {
+        newsDao = new NewsDaoImpl(TM.getConn());
+        return newsDao.updateNews(news) != 0;
     }
 
     @Override
-    public boolean addNews(News news) {
-        //把从连接辅助类经过线程安全化处理的conn连接传给dao层
-        NewsDao newsDao = new NewsDaoImpl(con.getThreadConnection());
-        try {
-            if (newsDao.addNews(news) > 0) {
-                return true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
+    public boolean addNews(News news) throws SQLException {
+        newsDao = new NewsDaoImpl(TM.getConn());
+        return newsDao.addNews(news) > 0;
     }
 
     @Override
-    public boolean delNewsByNewsId(Integer newsId) {
-        //把从连接辅助类经过线程安全化处理的conn连接传给dao层
-        NewsDao newsDao = new NewsDaoImpl(con.getThreadConnection());
-        try {
-            if (newsDao.delNewsByNewsId(newsId) > 0) {
-                return true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
+    public Boolean addComm(Comments comments) throws SQLException {
+        newsDao = new NewsDaoImpl(TM.getConn());
+        return newsDao.addComm(comments) > 0;
+    }
+
+    @Override
+    public boolean delNewsByNewsId(Integer newsId) throws SQLException {
+        newsDao = new NewsDaoImpl(TM.getConn());
+        return newsDao.delNewsByNewsId(newsId) > 0;
     }
 }

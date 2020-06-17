@@ -3,7 +3,7 @@ $("#opt_list").load("adsidbar");
 $("#friend").load("bottombar");
 $("#addTopic").click(function () {
     $.ajax({
-        url: 'topic', data: $("#topicAddForm").serialize(), method: "post", success: function (data) {
+        url: 'topic/topicadd', data: $("#topicAddForm").serialize(), method: "post", success: function (data) {
             if (data) {
                 if (confirm("添加成功是否继续添加？")) {
                     $("[name=topicName]").val("");

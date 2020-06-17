@@ -1,40 +1,47 @@
 package com.newsms.entity;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
- * (News)表实体类
+ * 评论表(Comment)实体类
  *
  * @author makejava
- * @since 2020-04-10 10:26:33
+ * @since 2020-06-07 21:45:32
  */
-public class News {
-    //新闻id
+public class News implements Serializable {
+    /**
+     * 新闻id
+     */
     private Long newsid;
-    //新闻标题
+    /**
+     * 新闻标题
+     */
     private String newstitle;
-    //作者姓名
+    /**
+     * 作者姓名
+     */
     private String newsauthor;
-    //新闻内容
+    /**
+     * 新闻内容
+     */
     private String content;
-    //发布时间
-    private Object publishdate;
-    //分类
+    /**
+     * 发布时间
+     */
+    private Date publishdate;
+    /**
+     * 分类
+     */
     private Integer topicId;
-    //话题名称
+    /**
+     * 话题名称
+     */
     private String topicName;
-    //图片
+    /**
+     * 图片
+     */
     private String picture;
-
-    public String getPicture() {
-        return picture;
-    }
-
-    public void setPicture(String picture) {
-        this.picture = picture;
-    }
-
-    public String getTopicName() {
-        return topicName;
-    }
 
     @Override
     public String toString() {
@@ -45,14 +52,11 @@ public class News {
                 ", content='" + content + '\'' +
                 ", publishdate=" + publishdate +
                 ", topicId=" + topicId +
-                ", topicName=" + topicName +
+                ", topicName='" + topicName + '\'' +
                 ", picture='" + picture + '\'' +
                 '}';
     }
 
-    public void setTopicName(String topicName) {
-        this.topicName = topicName;
-    }
 
     public Long getNewsid() {
         return newsid;
@@ -86,11 +90,11 @@ public class News {
         this.content = content;
     }
 
-    public Object getPublishdate() {
+    public Date getPublishdate() {
         return publishdate;
     }
 
-    public void setPublishdate(Object publishdate) {
+    public void setPublishdate(Date publishdate) {
         this.publishdate = publishdate;
     }
 
@@ -102,4 +106,19 @@ public class News {
         this.topicId = topicId;
     }
 
+    public String getTopicName() {
+        return topicName;
+    }
+
+    public void setTopicName(String topicName) {
+        this.topicName = topicName;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
 }

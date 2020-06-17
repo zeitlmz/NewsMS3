@@ -1,7 +1,7 @@
 package com.newsms.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.google.gson.Gson;
+import com.newsms.annotation.*;
+import com.newsms.entity.Comments;
 import com.newsms.entity.News;
 import com.newsms.entity.Page;
 import com.newsms.entity.Topic;
@@ -10,15 +10,13 @@ import com.newsms.service.TopicService;
 import com.newsms.service.impl.NewsServiceImpl;
 import com.newsms.service.impl.TopicServiceImpl;
 import com.newsms.util.ObjectEmpty;
+import com.newsms.util.TransactionManger;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
+import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,80 +24,61 @@ import java.util.Map;
 /**
  * @author lmz
  */
-@WebServlet("/news")
-public class NewsServlet extends HttpServlet {
-    private NewsService newsService = new NewsServiceImpl();
-    private TopicService topicService = new TopicServiceImpl();
+@RequestMapping("/news")
+public class NewsServlet {
+    private NewsService newsService = (NewsService) TransactionManger.getInstance(new NewsServiceImpl());
+    private TopicService topicService = (TopicService) TransactionManger.getInstance(new TopicServiceImpl());
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doPost(req, resp);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String method = req.getParameter("action");
-        if ("newsRead".equals(method)) {
-            newsRead(req, resp);
-        } else if ("sideNewsList".equals(method)) {
-            sideNewsList(req, resp);
-        } else if ("newsadd".equals(method)) {
-            newsAdd(req, resp);
-        } else if ("adnewsRead".equals(method)) {
-            adnewsRead(req, resp);
-        } else if ("searchNews".equals(method)) {
-            searchNews(req, resp);
-        } else if ("newsPage".equals(method)) {
-            newsByPage(req, resp);
-        } else if ("delete".equals(method)) {
-            delNewsByNewsId(req, resp);
-        } else if ("newsmodify".equals(method)) {
-            updateNews(req, resp);
-        } else {
-            req.getRequestDispatcher("/404.html").forward(req, resp);
-        }
-    }
-
-    //侧边栏新闻列表：国际，国内，娱乐
-    public void sideNewsList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json;charset=utf-8");
+    /**
+     * 侧边栏新闻列表：国际，国内，娱乐
+     *
+     * @return 侧边栏新闻列表
+     */
+    @GetMapping("/sideNewsList")
+    public Map<String, Object> sideNewsList() throws SQLException {
         Page pages = selectNewsByPage(1, 10);
         Map<String, Object> map = new HashMap<>();
         map.put("gn", selectNewsByTopicId(1));
         map.put("gj", selectNewsByTopicId(2));
         map.put("yl", selectNewsByTopicId(3));
-        String data = JSON.toJSONString(map);
-        PrintWriter out = response.getWriter();
-        out.write(data);
+        return map;
     }
 
-
-    public void searchNews(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    /**
+     * 搜索新闻
+     *
+     * @param news     搜索条件
+     * @param currPage 当前页
+     * @return 分页对象，包含新闻
+     */
+    @GetMapping("/searchNews")
+    public Page searchNews(@Params(classType = "Entity") News news, @Params("currPage") Integer currPage, HttpServletRequest request) throws ServletException, IOException, SQLException {
         request.getSession().removeAttribute("searchInfo");
-        newsByPage(request, response);
+        return newsPage(news, currPage, request);
     }
 
-    public void newsByPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json;charset=utf-8");
-        String newsTitle = request.getParameter("newsTitle");
-        String newsAuthor = request.getParameter("newsAuthor");
-        String content = request.getParameter("content");
-        String publishDate = request.getParameter("publishDate");
-        String topicId = request.getParameter("topicId");
-
-        String currPages = request.getParameter("currPage");
-        if (currPages == null) {
-            currPages = "1";
+    /**
+     * @param news     查询条件
+     * @param currPage 当前页
+     * @return 分页对象，包含了news对象
+     */
+    @GetMapping("/newsPage")
+    public Page newsPage(@Params(classType = "Entity") News news, @Params("currPage") Integer currPage, HttpServletRequest request) throws SQLException {
+        if (currPage == null) {
+            currPage = 1;
         }
-        Integer pageIndex = Integer.parseInt(currPages);
         Integer limit = 10;
-
         Map<String, Object> map = null;
         if (request.getSession().getAttribute("searchInfo") == null) {
             map = new HashMap<>();
         } else {
             map = (Map<String, Object>) request.getSession().getAttribute("searchInfo");
         }
+        String newsTitle = news.getNewstitle();
+        String newsAuthor = news.getNewsauthor();
+        String content = news.getContent();
+        Date publishDate = news.getPublishdate();
+        Integer topicId = news.getTopicId();
 
         if (!ObjectEmpty.isEmpty(newsTitle)) {
             map.put("newsTitle", newsTitle);
@@ -116,101 +95,94 @@ public class NewsServlet extends HttpServlet {
         if (!ObjectEmpty.isEmpty(topicId)) {
             map.put("topicId", topicId);
         }
-
         map.put("limit", limit);
-        map.put("page", pageIndex);
+        map.put("page", currPage);
         request.getSession().setAttribute("searchInfo", map);
-        Page pages = newsService.searchNews(map);
-        PrintWriter out = response.getWriter();
-        String s = JSON.toJSONString(pages);
-        out.write(s);
+        return newsService.searchNews(map);
     }
 
-
-    public List<Topic> selectTopicList() {
+    /**
+     * @return 话题列表
+     */
+    public List<Topic> selectTopicList() throws SQLException {
         return topicService.selectTopicList();
     }
 
-    public Page selectNewsByPage(Integer currPage, Integer limit) {
+    /**
+     * 分页查询所有的新闻
+     */
+    public Page selectNewsByPage(Integer currPage, Integer limit) throws SQLException {
         return newsService.selectNewsByPage(currPage, limit);
     }
 
-    public void newsRead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json;charset=utf-8");
-        int newsId = Integer.parseInt(request.getParameter("newsid"));
-        News news = newsService.selectNewsByNewsId(newsId);
-        PrintWriter out = response.getWriter();
-        String s = JSON.toJSONString(news);
-        out.write(s);
+    /**
+     * @return News对象
+     */
+    @GetMapping("/newsRead")
+    public News newsRead(@Params("newsid") Integer newsid) throws SQLException {
+        return newsService.selectNewsByNewsId(newsid);
     }
 
-    public void adnewsRead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json;charset=utf-8");
-        int newsId = Integer.parseInt(request.getParameter("newsid"));
-        System.out.println("读取新闻id：" + newsId);
-        News news = newsService.selectNewsByNewsId(newsId);
+    /**
+     * @return 评论列表
+     */
+    @GetMapping("/newscomments")
+    public List<Comments> newscomments(@Params("newsid") Integer newsid) throws SQLException {
+        return newsService.selectCommByNewsId(newsid);
+    }
+
+    /**
+     * @return 添加评论是否成功
+     */
+    @PostMapping("/commns")
+    public Boolean commns(@Params(classType = "Entity") Comments comments) throws ServletException, IOException, SQLException {
+        return newsService.addComm(comments);
+    }
+
+    /**
+     * @return 读取新闻和评论列表
+     */
+    @GetMapping("/adnewsRead")
+    public Map<String, Object> adnewsRead(@Params("newsid") Integer newsid) throws SQLException {
+        News news = newsService.selectNewsByNewsId(newsid);
         if (!ObjectEmpty.isEmpty(news)) {
-            PrintWriter out = response.getWriter();
             Map<String, Object> map = new HashMap<>();
             List<Topic> topics = selectTopicList();
             map.put("news", news);
             map.put("topics", topics);
-            String s = JSON.toJSONString(map);
-            out.write(s);
+            return map;
         }
+        return null;
     }
 
-    public List<News> selectNewsByTopicId(Integer topicId) {
+    public List<News> selectNewsByTopicId(Integer topicId) throws SQLException {
         return newsService.selectNewsByTopicId(topicId);
     }
 
-    public void selectNewsByRealName(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int currPage = Integer.parseInt(request.getParameter("currPage"));
-        int limit = Integer.parseInt(request.getParameter("limit"));
-        String newsAuthor = request.getParameter("newsAuthor");
-        Page page = newsService.selectNewsByRealName(currPage, limit, newsAuthor);
-        Gson gson = new Gson();
-        String a = gson.toJson(page);
-        Writer out = response.getWriter();
-        out.write(a);
+    /**
+     * @return 添加修改新闻是否成功
+     */
+    @PostMapping("/newsmodify")
+    public boolean newsmodify(@Params(classType = "Entity") News news) throws SQLException {
+        return newsService.updateNews(news);
     }
 
-    public void updateNews(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json;charset=utf-8");
-        PrintWriter out = response.getWriter();
-        Map<String, String[]> parameterMap = request.getParameterMap();
-        String s1 = JSON.toJSONString(parameterMap);
-        String s2 = s1.replace("[", "");
-        String s3 = s2.replace("]", "");
-        News news = JSON.parseObject(s3, News.class);
-        boolean b = newsService.updateNews(news);
-        String s = JSON.toJSONString(b);
-        out.write(s);
+    /**
+     * @return 添加新闻是否成功
+     */
+    @PostMapping("/newsadd")
+    public boolean newsadd(@Params(classType = "Entity") News news) throws SQLException {
+        return newsService.addNews(news);
     }
 
-    public void newsAdd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json;charset=utf-8");
-        PrintWriter out = response.getWriter();
-        Map<String, String[]> parameterMap = request.getParameterMap();
-        String s1 = JSON.toJSONString(parameterMap);
-        String s2 = s1.replace("[", "");
-        String s3 = s2.replace("]", "");
-        News news = JSON.parseObject(s3, News.class);
-        boolean b = newsService.addNews(news);
-        String s = JSON.toJSONString(b);
-        out.write(s);
-    }
-
-    public void delNewsByNewsId(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String str = request.getParameter("newsid");
-        response.setContentType("application/json;charset=utf-8");
-        PrintWriter out = response.getWriter();
-        if (str != null) {
-            boolean b = newsService.delNewsByNewsId(Integer.parseInt(str));
-            String s = JSON.toJSONString(b);
-            out.write(s);
-        } else {
-            out.write("false");
+    /**
+     * @return 删除新闻是否成功
+     */
+    @GetMapping("/delete")
+    public boolean delete(@Params("newsid") Integer newsid) throws SQLException {
+        if (newsid != null) {
+            return newsService.delNewsByNewsId(newsid);
         }
+        return false;
     }
 }

@@ -12,9 +12,8 @@
 </div>
 <script>
     $.ajax({
-        url: 'news',
-        method: "post",
-        data: {"action": "sideNewsList"},
+        url: 'news/sideNewsList',
+        method: "get",
         success: function (data) {
             const gj = data.gj;
             let sgj = "";

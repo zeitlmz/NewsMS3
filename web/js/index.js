@@ -4,12 +4,12 @@ $(function () {
 
     $(".login_sub").click(function () {
         $.ajax({
-            url: 'user',
+            url: 'user/login',
             method: "post",
             data: $("#loginform").serialize(),
             success: function (data) {
                 if (data.code === 0) {
-                    location.reload();
+                    getUser();
                 } else {
                     $("#error").html(data.msg);
                 }
@@ -19,10 +19,26 @@ $(function () {
             }
         });
     });
+    getUser();
+
+    function getUser() {
+        $.ajax({
+            url: 'user/getSession',
+            method: "post",
+            success: function (data) {
+                if (data !== null) {
+                    $("#top_login").html("<span>欢迎管理员:" + data.realName + "登陆新闻管理系统！</span><a href='/NewsMS3/admin'>进入后台</a>--------<a onclick='logout()'>注销</a>");
+                }
+            },
+            error: function () {
+                alert("连接服务器失败！");
+            }
+        });
+    }
+
     $.ajax({
-        url: 'topic',
-        method: "post",
-        data: {"action": "topics"},
+        url: 'topic/topics',
+        method: "get",
         success: function (data) {
             let stop = "<option value=''>全部</option>";
             for (const topic of data) {
@@ -34,27 +50,13 @@ $(function () {
             alert("连接服务器失败！");
         }
     });
-    $.ajax({
-        url: 'user',
-        method: "post",
-        data: {"action": "getSession"},
-        success: function (data) {
-            if (data !== null) {
-                $("#top_login").html("<span>欢迎管理员:" + data.realName + "登陆新闻管理系统！</span><a href='/NewsMS3/admin'>进入后台</a>--------<a onclick='logout()'>注销</a>");
-            }
-        },
-        error: function () {
-            alert("连接服务器失败！");
-        }
-    });
 });
 
 function logout() {
     if (confirm("确认退出登录？")) {
         $.ajax({
-            url: 'user',
+            url: 'user/logout',
             method: "post",
-            data: {"action": "logout"},
             success: function () {
                 location.reload();
             },
@@ -69,9 +71,9 @@ newsPage(1);
 
 function newsPage(currPage) {
     $.ajax({
-        url: 'news',
-        method: "post",
-        data: {"action": "newsPage", "currPage": currPage},
+        url: 'news/newsPage',
+        method: "get",
+        data: {"currPage": currPage},
         success: function (data) {
             var newslist = data.data;
             var snews = "";
@@ -103,8 +105,8 @@ function newsPage(currPage) {
 
 function searchNews() {
     $.ajax({
-        url: 'news',
-        method: "post",
+        url: 'news/searchNews',
+        method: "get",
         data: $("#searchNews").serialize(),
         success: function (data) {
             var snews = "";

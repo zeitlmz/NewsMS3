@@ -3,8 +3,7 @@ $("#opt_list").load("adsidbar");
 $("#friend").load("bottombar");
 $(function () {
     $.ajax({
-        url: 'topic',
-        data: {"action": "topics"},
+        url: 'topic/topics',
         success: function (data) {
             let stop = "";
             for (const topic of data) {
@@ -20,7 +19,7 @@ $(function () {
 
 $("#addNews").click(function () {
     $.ajax({
-        url: 'news', method: "post", data: $("#newsaddForm").serialize(), success: function (data) {
+        url: 'news/newsadd', method: "post", data: $("#newsaddForm").serialize(), success: function (data) {
             if (data) {
                 if (confirm("添加成功是否继续添加？")) {
                     $("textarea").val("");

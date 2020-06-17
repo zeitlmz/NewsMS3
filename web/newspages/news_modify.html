@@ -14,16 +14,16 @@
 <div id="container">
     <div id="opt_list"></div>
     <div id="opt_area"><h1 id="opt_type"> 编辑新闻： </h1>
-        <form id="newsform"><input type="hidden" name="action" value="newsmodify">
-            <input type="hidden" name="newsId" value="">
+        <form id="newsform">
+            <input type="hidden" name="newsid" value="">
             <p><label> 主题 &nbsp;</label><select id="topics" name="topicId"> </select></p>
             <p><label> 标题 </label>
-                <input name="newsTitle" type="text" required class="opt_input" style="width: 300px;" value=""/></p>
+                <input name="newstitle" type="text" required class="opt_input" style="width: 300px;" value=""/></p>
             <p><label> 时间 </label>
                 <input name="publishdate" type="text" disabled required class="opt_input" style="width: 300px;"
                        value=""/></p>
             <p><label> 作者 </label>
-                <input name="newsAuthor" type="text" required class="opt_input" style="width:100px" value=""/></p>
+                <input name="newsauthor" type="text" required class="opt_input" style="width:100px" value=""/></p>
             <label> 内容: </label>
             <p><textarea name="content" cols="120" required rows="20"></textarea></p>
             <!--            <p><label> 上传图片 </label><input name="file" id="file" type="file" class="opt_input"/></p>-->

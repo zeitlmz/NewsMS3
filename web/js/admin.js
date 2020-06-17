@@ -2,13 +2,11 @@ $("#adminheader").load("adminheader");
 $("#opt_list").load("adsidbar");
 $("#friend").load("bottombar");
 
-newsPage(1);
-
 function newsPage(currPage) {
     $.ajax({
-        url: 'news',
-        method: "post",
-        data: {"action": "newsPage", "currPage": currPage},
+        url: 'news/newsPage',
+        method: "get",
+        data: {"currPage": currPage},
         success: function (data) {
             var newslist = data.data;
             var snews = "";
@@ -38,10 +36,12 @@ function newsPage(currPage) {
     return false;
 }
 
+searchNews();
+
 function searchNews() {
     $.ajax({
-        url: 'news',
-        method: "post",
+        url: 'news/searchNews',
+        method: "get",
         data: $("#searchNews").serialize(),
         success: function (data) {
             var snews = "";
@@ -74,8 +74,8 @@ function searchNews() {
 function del(id) {
     if (confirm("确定删除此条新闻吗？")) {
         $.ajax({
-            url: '/NewsMS3/news',
-            data: {"action": "delete", "newsid": id},
+            url: 'news/delete',
+            data: {"newsid": id},
             success: function (data) {
                 if (data) {
                     searchNews();
@@ -93,8 +93,7 @@ function del(id) {
 
 $(function () {
     $.ajax({
-        url: 'topic',
-        data: {"action": "topics"},
+        url: 'topic/topics',
         success: function (data) {
             let stop = "<option value=''>全部</option>";
             for (const topic of data) {

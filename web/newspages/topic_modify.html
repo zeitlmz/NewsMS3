@@ -19,7 +19,6 @@
         <form id="topicModify">
             <p>
                 <label> 主题名称 </label>
-                <input type="hidden" name="action" value="topicmodify">
                 <input type="hidden" name="topicId">
                 <input name="topicName" required type="text" class="opt_input" value=""/>
             </p>
@@ -39,8 +38,8 @@
         var topicId = url.split("=")[1];
         $("[name=topicId]").val(topicId);
         $.ajax({
-            url: 'topic',
-            data: {"action": "selectTopic", "topicId": topicId},
+            url: 'topic/selectTopic',
+            data: {"topicId": topicId},
             success: function (data) {
                 $("[name=topicName]").val(data.topicName);
             },

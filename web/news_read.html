@@ -10,86 +10,45 @@
     <div class="sidebar"></div>
     <div class="main">
         <div class="class_type"><img src="images/class_type.gif" alt="新闻中心"/></div>
-        <div class="content">
-            <ul class="classlist">
-                <table width="80%" align="center">
-                    <caption><h3>标题:<span id="title"></span></h3></caption>
-                    <caption>作者: <span id="author"></span>-话题：<span id="topicName"></span></caption>
-                    <caption>发布时间：<span id="pushDate"></span></caption>
+        <p class="content">
+        <ul class="classlist">
+            <table width="80%" align="center">
+                <caption><h3>标题:<span id="title"></span></h3></caption>
+                <caption>作者: <span id="author"></span>-话题：<span id="topicName"></span></caption>
+                <caption>发布时间：<span id="pushDate"></span></caption>
+            </table>
+        </ul>
+        <textarea disabled id="content" rows="25" style="padding: 30px;font-size:16px;border: none;"></textarea>
+        <div style="width: 100%;margin-left: 30px">
+            <div style="width: 949px;height:auto;">
+                <div style="font-size: 16px;font-weight: bolder;margin: 30px">评论列表</div>
+                <table id="comments">
+                    <caption>加载评论失败~</caption>
                 </table>
-            </ul>
-            <div id="content" style="padding: 50px;font-size:16px"></div>
-            <ul class="classlist">
-                <table width="80%" align="center">
-                    <td colspan="6"> 暂无评论！</td>
-                    <tr>
-                        <td colspan="6">
-                            <hr/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td> 留言人：</td>
-                        <td>${comment.cauthor}</td>
-                        <td> IP：</td>
-                        <td>${comment.cip}</td>
-                        <td> 留言时间：</td>
-                        <td>${comment.cdate}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="6">${comment.ccontent}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="6">
-                            <hr/>
-                        </td>
-                    </tr>
-                </table>
-            </ul>
-            <ul class="classlist">
-                <form action="util/news_control.jsp?opr=addComment&nid=${ news.nid}" method="post">
-                    <table width="80%" align="center">
+                <h3>开始评论</h3>
+                <form id="commform">
+                    <input type="hidden" name="nid"/>
+                    <table>
                         <tr>
-                            <td> 评 论</td>
-                        </tr>
-                        <tr>
-                            <td> 用户名：</td>
-                            <td>IP：
-                                <input name="cip" id="cip" value="" readonly="readonly"
-                                       style="border:0px;"/>
+                            <td>
+                                <hr/>
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2"><textarea name="ccontent" id="ccontent" cols="70" rows="10"></textarea>
-                            </td>
+                            <td> 用户名：<input type="text" name="cname" placeholder="不填写默认匿名"></td>
                         </tr>
-                        <td><input name="submit" value="发  表" type="submit"/>
-                        </td>
+                        <tr>
+                            <td colspan="2"><textarea name="comm" cols="35" rows="6"></textarea></td>
+                        </tr>
+                        <td><input type="button" onclick="comms()" value="发  表"/></td>
                     </table>
                 </form>
-            </ul>
+            </div>
+
         </div>
     </div>
 </div>
 <div id="bottmbar"></div>
-<script>
-    $(".sidebar").load("sidebar");
-    $("#bottmbar").load("bottombar");
-    var url = location.href;
-    var newsid = url.split("=")[1];
-    $.ajax({
-        url: 'news',
-        data: {"action": "newsRead", "newsid": newsid},
-        success: function (data) {
-            $("#title").html(data.newstitle);
-            $("#topicName").html(data.topicName);
-            $("#pushDate").html(data.publishdate);
-            $("#author").html(data.newsauthor);
-            $("#content").html(data.content);
-        },
-        error: function () {
-            alert("连接服务器失败！");
-        }
-    });
-</script>
+<script src="./js/newsread.js"></script>
 </body>
 </html>

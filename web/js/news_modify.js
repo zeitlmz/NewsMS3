@@ -5,9 +5,9 @@ $("#friend").load("bottombar");
 function newsread() {
     var url = location.href;
     var newsid = url.split("=")[1];
-    $("[name=newsId]").val(newsid);
+    $("[name=newsid]").val(newsid);
     $.ajax({
-        url: 'news', data: {"action": "adnewsRead", "newsid": newsid}, success: function (data) {
+        url: 'news/adnewsRead', data: {"newsid": newsid}, success: function (data) {
             const topics = data.topics;
             let stop = "";
             for (const topic of topics) {
@@ -15,9 +15,9 @@ function newsread() {
             }
             $("#topics").html(stop);
             const news = data.news;
-            $("[name=newsTitle]").val(news.newstitle);
+            $("[name=newstitle]").val(news.newstitle);
             $("[name=publishdate]").val(news.publishdate);
-            $("[name=newsAuthor]").val(news.newsauthor);
+            $("[name=newsauthor]").val(news.newsauthor);
             $("[name=content]").val(news.content);
         }, error: function () {
             alert("连接服务器失败！");
@@ -27,7 +27,7 @@ function newsread() {
 
 function newsUpdate() {
     $.ajax({
-        url: 'news', method: "post", data: $("#newsform").serialize(), success: function (data) {
+        url: 'news/newsmodify', method: "post", data: $("#newsform").serialize(), success: function (data) {
             if (data) {
                 alert("修改成功！")
             } else {

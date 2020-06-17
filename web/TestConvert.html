@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试转换成带泛型的list</title>
+</head>
+<style>
+    td {
+        text-align: left;
+    }
+</style>
+<script src="js/jquery-3.4.1.min.js"></script>
+<body>
+<form id="dataForm">
+    <table>
+        <tr>
+            <td>标题：</td>
+            <td><input type="text" name="newstitle"></td>
+            <td>作者：</td>
+            <td><input type="text" name="newsauthor"></td>
+            <td>内容：</td>
+            <td><input type="text" name="content"></td>
+            <td>日期：</td>
+            <td><input type="text" name="publishdate"></td>
+            <td>话题：</td>
+            <td><select name="topicId" class="topics"></select></td>
+            <td>图片：</td>
+            <td><input type="text" name="picture"></td>
+            <td>
+                <button onclick="javascript:alert('还是留一行吧，不能全删了啊');return false;">删除此行</button>
+            </td>
+        </tr>
+    </table>
+</form>
+<button onclick="PostInfo()">提交</button>
+<button onclick="addNewLine()">添加新行</button>
+<script>
+    /**
+     * @return {boolean}
+     */
+    function PostInfo() {
+        $.ajax({
+            url: 'user/addNews',
+            method: "post",
+            data: $("#dataForm").serialize(),
+            success: function (data) {
+                console.log(data);
+            },
+            error: function () {
+                alert("服务器开了点小差~！");
+            }
+        });
+        return false;
+    }
+
+    getTopis();
+
+    function getTopis() {
+        $.ajax({
+            url: 'topic/topics',
+            method: "post",
+            data: {"action": "topics"},
+            success: function (data) {
+                let stop = "";
+                for (const topic of data) {
+                    stop += "<option value='" + topic.topicId + "'>" + topic.topicName + "</option>";
+                }
+                $(".topics").html(stop);
+            },
+            error: function () {
+                alert("连接服务器失败！");
+            }
+        });
+    }
+
+    function delLine() {
+        $(this).parent().parent().remove();
+        return false;
+    }
+
+    function addNewLine() {
+        $("table").after("<tr>\n" +
+            "            <td>标题：</td>\n" +
+            "            <td><input type=\"text\" name=\"newstitle\"></td>\n" +
+            "            <td>作者：</td>\n" +
+            "            <td><input type=\"text\" name=\"newsauthor\"></td>\n" +
+            "            <td>内容：</td>\n" +
+            "            <td><input type=\"text\" name=\"content\"></td>\n" +
+            "            <td>日期：</td>\n" +
+            "            <td><input type=\"text\" name=\"publishdate\"></td>\n" +
+            "            <td>话题：</td>\n" +
+            "            <td><select name=\"topicId\" id=\"topics\"></select></td>\n" +
+            "            <td>图片：</td>\n" +
+            "            <td><input type=\"text\" name=\"picture\"></td>\n" +
+            "            <td>\n" +
+            "                <button onclick='javascript:$(this).parent().parent().remove();return false'>删除此行</button>\n" +
+            "            </td>\n" +
+            "        </tr>");
+        getTopis();
+    }
+</script>
+</body>
+</html>

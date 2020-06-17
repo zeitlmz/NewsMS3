@@ -1,13 +1,11 @@
 package com.newsms.util;
 
 import com.newsms.entity.Router;
-
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,6 +27,7 @@ public class uriFilter implements Filter {
         } else {
             //否则就分割字符串
             String[] urls = url.split("/");
+            String[] ajaxUrls = url.split(req.getContextPath() + "/");
             String name = null;
             //这里只截取项目名后一位的字符
             if (urls.length > 2) {
@@ -39,6 +38,7 @@ public class uriFilter implements Filter {
             }
             //使用name做为查询条件去查询名name的路由
             Router router = ReadXmlAndJsonFileToObj.selectXMLNode("classpath:Router.xml", name, Router.class);
+//            System.out.println("查询到路由信息：" + router);
             //判断路由信息对象是否为空，如果为空
             if (ObjectEmpty.isEmpty(router)) {
                 req.getRequestDispatcher("/404.html").forward(req, resp);
@@ -48,41 +48,24 @@ public class uriFilter implements Filter {
                     req.getRequestDispatcher("/404.html").forward(req, resp);
                 } else {
                     if (router.getHasFilter()) {
-                        //需要经过权限验证
+                        //需要经过权限验证的页面
                         if (req.getSession().getAttribute("user") != null) {
                             req.getRequestDispatcher(router.getPagePath()).forward(req, resp);
                         } else {
                             resp.sendRedirect(req.getContextPath());
                         }
                     } else {
-                        //不需要经过权限验证
+                        //不需要经过权限验证的页面
                         req.getRequestDispatcher(router.getPagePath()).forward(req, resp);
                     }
                 }
                 //reqType为ajax是ajax请求
             } else if ("ajax".equals(router.getReqType())) {
-                if (req.getSession().getAttribute("user") != null
-                        | req.getParameter("action").equals("newsPage")
-                        | req.getParameter("action").equals("login")
-                        | req.getParameter("action").equals("newsRead")
-                        | req.getParameter("action").equals("searchNews")
-                        | req.getParameter("action").equals("sideNewsList")
-                        | req.getParameter("action").equals("newsPage")
-                        | req.getParameter("action").equals("topics")
-                        | req.getParameter("action").equals("getSession")) {
-                    if (urls.length > 3) {
-                        req.getRequestDispatcher("/404.html").forward(req, resp);
-                    } else {
-//                        System.out.println("已放行ajax请求->servlet名：" + name + "\t请求执行方法名：" + req.getParameter("action"));
-                        filterChain.doFilter(req, resp);
-                    }
-                } else {
-                    resp.setContentType("text/html;charset=utf-8");
-                    PrintWriter out = resp.getWriter();
-                    out.write("<script>alert('登陆态失效,请登录后在试！')</script>");
-                }
+                //ajax访问权限管理类
+                AjaxUtil.Go(req, resp, ajaxUrls, router);
                 //reqType为static是静态资源请求
             } else if ("static".equals(router.getReqType())) {
+                //直接放行静态资源
                 filterChain.doFilter(req, resp);
             }
         }

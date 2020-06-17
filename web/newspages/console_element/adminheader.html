@@ -11,9 +11,8 @@
 </div>
 <script>
     $.ajax({
-        url: 'user',
+        url: 'user/getSession',
         method: "post",
-        data: {"action": "getSession"},
         success: function (data) {
             if (data !== null) {
                 $("#welcome").html("欢迎管理员:" + data.realName + "登陆新闻管理系统！--><a href='/NewsMS3'>回到主页</a>")
@@ -28,9 +27,8 @@
     function logout() {
         if (confirm("确认退出登录？")) {
             $.ajax({
-                url: 'user',
+                url: 'user/logout',
                 method: "post",
-                data: {"action": "logout"},
                 success: function () {
                     location.reload();
                 },

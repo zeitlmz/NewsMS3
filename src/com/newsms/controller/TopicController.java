@@ -1,94 +1,76 @@
 package com.newsms.controller;
 
-import com.alibaba.fastjson.JSON;
+import com.newsms.annotation.GetMapping;
+import com.newsms.annotation.Params;
+import com.newsms.annotation.PostMapping;
+import com.newsms.annotation.RequestMapping;
 import com.newsms.entity.Topic;
 import com.newsms.service.TopicService;
 import com.newsms.service.impl.TopicServiceImpl;
+import com.newsms.util.TransactionManger;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.Writer;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
  * @author lmz
  */
-@WebServlet("/topic")
-public class TopicController extends HttpServlet {
+@RequestMapping("/topic")
+public class TopicController {
+    private TopicService topicService = (TopicService) TransactionManger.getInstance(new TopicServiceImpl());
 
-    private TopicService topicService = new TopicServiceImpl();
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doPost(req, resp);
+    /**
+     * 查询所有话题
+     *
+     * @return 话题列表
+     */
+    @GetMapping("/topics")
+    public List<Topic> topics() throws SQLException {
+        return topicService.selectTopicList();
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String method = req.getParameter("action");
-        if ("topics".equals(method)) {
-            selectTopicList(req, resp);
-        } else if ("topicadd".equals(method)) {
-            addTopic(req, resp);
-        } else if ("topicmodify".equals(method)) {
-            updateTopic(req, resp);
-        } else if ("topicdel".equals(method)) {
-            delTopic(req, resp);
-        } else if ("selectTopic".equals(method)) {
-            selectTopicByid(req, resp);
-        } else {
-            req.getRequestDispatcher("/404.html").forward(req, resp);
-        }
+    /**
+     * 增加话题
+     *
+     * @param topicName 话题名称
+     * @return 是否成功
+     */
+    @PostMapping("/topicadd")
+    public boolean topicadd(@Params("topicName") String topicName) throws IOException, SQLException {
+        return topicService.addTopic(topicName);
     }
 
-    public void selectTopicList(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json;charset=utf-8");
-        List<Topic> list = topicService.selectTopicList();
-        Writer out = response.getWriter();
-        String s = JSON.toJSONString(list);
-        out.write(s);
+    /**
+     * 删除话题
+     *
+     * @return 是否成功
+     */
+    @PostMapping("/topicdel")
+    public int topicdel(@Params("topicId") Integer topicId) throws IOException, SQLException {
+        return topicService.delTopic(topicId);
     }
 
-    public void addTopic(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json;charset=utf-8");
-        String topicName = request.getParameter("topicName");
-        TopicService topicService = new TopicServiceImpl();
-        Writer out = response.getWriter();
-        boolean b = topicService.addTopic(topicName);
-        String s = JSON.toJSONString(b);
-        out.write(s);
+    /**
+     * 修改话题
+     *
+     * @param topicId   话题id
+     * @param topicName 话题新名称
+     * @return 修改成功数量
+     */
+    @PostMapping("/topicmodify")
+    public int topicmodify(@Params("topicId") Integer topicId, @Params("topicName") String topicName) throws SQLException {
+        return topicService.updateTopic(topicId, topicName);
     }
 
-    public void delTopic(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json;charset=utf-8");
-        int topicId = Integer.parseInt(request.getParameter("topicId"));
-        Writer writer = response.getWriter();
-        Writer out = response.getWriter();
-        int b = topicService.delTopic(topicId);
-        String s = JSON.toJSONString(b);
-        out.write(s);
-    }
-
-    public void updateTopic(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json;charset=utf-8");
-        int topicId = Integer.parseInt(request.getParameter("topicId"));
-        String newTopic = request.getParameter("topicName");
-        Writer out = response.getWriter();
-        int b = topicService.updateTopic(topicId, newTopic);
-        String s = JSON.toJSONString(b);
-        out.write(s);
-    }
-
-    public void selectTopicByid(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json;charset=utf-8");
-        int topicId = Integer.parseInt(request.getParameter("topicId"));
-        Topic topic = topicService.selectTopicByid(topicId);
-        Writer out = response.getWriter();
-        String s = JSON.toJSONString(topic);
-        out.write(s);
+    /**
+     * 查询指定id的话题
+     *
+     * @param topicId 话题id
+     * @return 话题对象
+     */
+    @PostMapping("/selectTopic")
+    public Topic selectTopic(@Params("topicId") Integer topicId) throws IOException, SQLException {
+        return topicService.selectTopicByid(topicId);
     }
 }

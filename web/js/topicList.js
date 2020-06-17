@@ -4,8 +4,7 @@ $("#friend").load("bottombar");
 
 function topicList() {
     $.ajax({
-        url: 'topic',
-        data: {"action": "topics"},
+        url: 'topic/topics',
         success: function (data) {
             var str = "<tr style=\"font-weight: bolder;border: dashed 1px #d9d9d9\">\n" +
                 "            <td>标题</td>\n" +
@@ -31,8 +30,9 @@ function topicList() {
 function topicdel(id) {
     if (confirm("确定删除此话题吗？")) {
         $.ajax({
-            url: 'topic',
-            data: {"action": "topicdel", "topicId": id},
+            url: 'topic/topicdel',
+            method:"post",
+            data: {"topicId": id},
             success: function (data) {
                 if (data === 1) {
                     topicList();

@@ -1,7 +1,9 @@
 package com.newsms.dao.impl;
 
 import com.newsms.dao.NewsDao;
+import com.newsms.entity.Comments;
 import com.newsms.entity.News;
+import com.newsms.util.ObjectEmpty;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -20,6 +22,9 @@ public class NewsDaoImpl implements NewsDao {
         this.conn = conn;
     }
 
+    public NewsDaoImpl() {
+    }
+
     @Override
     public List<News> selectNewsByPage(Integer page, Integer limit) throws SQLException {
         String sql = "select newsId,newsTitle,newsAuthor,publishDate from news limit ?,?";
@@ -32,12 +37,12 @@ public class NewsDaoImpl implements NewsDao {
             long newsId = rs.getLong("newsId");
             String newsTitle = rs.getString("newsTitle");
             String newsauthor = rs.getString("newsAuthor");
-            Timestamp publishDate = rs.getTimestamp("publishDate");
+            Date publishDate = rs.getDate("publishDate");
             News news = new News();
             news.setNewsid(newsId);
             news.setNewsauthor(newsauthor);
             news.setNewstitle(newsTitle);
-            news.setPublishdate(dateToString(publishDate));
+            news.setPublishdate(publishDate);
             list.add(news);
         }
         return list;
@@ -74,7 +79,7 @@ public class NewsDaoImpl implements NewsDao {
 
     @Override
     public List<News> selectNewsByTopicId(Integer topicId) throws SQLException {
-        String sql = "select newsId,newsTitle from news where topicId=? limit 0,10";
+        String sql = "select newsId,newsTitle from news where topicId=? order by publishDate desc limit 0,10";
         PreparedStatement pstm = this.conn.prepareStatement(sql);
         pstm.setInt(1, topicId);
         ResultSet rs = pstm.executeQuery();
@@ -103,7 +108,7 @@ public class NewsDaoImpl implements NewsDao {
             news.setNewstitle(rs.getString("newsTitle"));
             news.setNewsauthor(rs.getString("newsAuthor"));
             news.setContent(rs.getString("content"));
-            news.setPublishdate(rs.getString("publishDate"));
+            news.setPublishdate(rs.getDate("publishDate"));
             news.setTopicId(rs.getInt("topicId"));
             list.add(news);
         }
@@ -124,6 +129,7 @@ public class NewsDaoImpl implements NewsDao {
 
     @Override
     public Integer updateNews(News news) throws SQLException {
+        System.out.println("updateNews:" + news);
         String sql = "update news\n" +
                 "set newsTitle=?,\n" +
                 "    newsAuthor=?,\n" +
@@ -136,14 +142,12 @@ public class NewsDaoImpl implements NewsDao {
         pstm.setString(3, news.getContent());
         pstm.setInt(4, news.getTopicId());
         pstm.setLong(5, news.getNewsid());
-        System.out.println(news.getNewsid() + news.getContent() + news.getNewsauthor() + news.getNewstitle() + news.getTopicId());
         int count = pstm.executeUpdate();
-        System.out.println("成功修改新闻：:" + count + "条");
         return count;
     }
 
     @Override
-    public int addNews(News news) throws SQLException {
+    public Integer addNews(News news) throws SQLException {
         String sql = "insert into news(newsTitle,newsAuthor,content,topicId,picture) values(?,?,?,?,?)";
         PreparedStatement pstm = this.conn.prepareStatement(sql);
         pstm.setString(1, news.getNewstitle());
@@ -152,18 +156,61 @@ public class NewsDaoImpl implements NewsDao {
         pstm.setInt(4, news.getTopicId());
         pstm.setString(5, news.getPicture());
         int count = pstm.executeUpdate();
-        System.out.println("成功增加新闻：:" + count + "条");
         return count;
     }
 
     @Override
-    public int delNewsByNewsId(Integer newsId) throws SQLException {
+    public Integer delNewsByNewsId(Integer newsId) throws SQLException {
         String sql = "delete from news where newsId=?";
         PreparedStatement pstm = conn.prepareStatement(sql);
         pstm.setInt(1, newsId);
         int count = pstm.executeUpdate();
-        System.out.println("成功删除新闻：:" + count + "条");
         return count;
+    }
+
+
+    @Override
+    public List<Comments> selectNewsCommByNewsId(Integer newsId) throws SQLException {
+        String sql = "select c.cid\n" +
+                "     , c.cname\n" +
+                "     , c.comm\n" +
+                "     , c.ctime\n" +
+                "from news n,\n" +
+                "     comment c\n" +
+                "where c.nid = n.newsId\n" +
+                "  and newsId = ? order by ctime desc ";
+        PreparedStatement pstm = this.conn.prepareStatement(sql);
+        pstm.setInt(1, newsId);
+        ResultSet rs = pstm.executeQuery();
+        List<Comments> list = new ArrayList<>();
+        while (rs.next()) {
+            Comments comments = new Comments();
+            comments.setCid(rs.getLong("cid"));
+            comments.setCname(rs.getString("cname"));
+            comments.setComm(rs.getString("comm"));
+            comments.setCtime(rs.getDate("ctime"));
+            list.add(comments);
+        }
+        return list;
+    }
+
+    @Override
+    public Integer addComm(Comments comments) throws SQLException {
+        String sql = "";
+        if (!ObjectEmpty.isEmpty(comments.getCname())) {
+            sql = "insert into comment(cname, nid, comm,ctime) values(?,?,?,now())";
+            PreparedStatement pstm = this.conn.prepareStatement(sql);
+            pstm.setString(1, comments.getCname());
+            pstm.setLong(2, comments.getNid());
+            pstm.setString(3, comments.getComm());
+            return pstm.executeUpdate();
+        } else {
+            sql = "insert into comment(nid, comm,ctime) values(?,?,now())";
+            PreparedStatement pstm = this.conn.prepareStatement(sql);
+            pstm.setLong(1, comments.getNid());
+            pstm.setString(2, comments.getComm());
+            return pstm.executeUpdate();
+        }
     }
 
     @Override
@@ -186,10 +233,10 @@ public class NewsDaoImpl implements NewsDao {
                     case "newsAuthor":
                     case "content":
                     case "publishDate":
-                        sb.append(" "+key + " like '%" + map.get(key) + "%' and");
+                        sb.append(" " + key + " like '%" + map.get(key) + "%' and");
                         break;
                     case "topicId":
-                        sb.append(" "+key + "=" + map.get(key) + " and");
+                        sb.append(" " + key + "=" + map.get(key) + " and");
                         break;
                     default:
                         break;
@@ -197,7 +244,6 @@ public class NewsDaoImpl implements NewsDao {
             }
             sb.delete(sb.lastIndexOf("a"), sb.lastIndexOf("a") + 3);
             sb.append(" order by publishDate desc limit " + map.get("page") + "," + map.get("limit"));
-            System.out.println("生成sql：" + sb);
             PreparedStatement pstm = this.conn.prepareStatement(sb.toString());
             rs = pstm.executeQuery();
         }
@@ -214,56 +260,38 @@ public class NewsDaoImpl implements NewsDao {
     }
 
     @Override
-    public Integer selectCountBySearch(Map<String, Object> map1) throws SQLException {
+    public Integer selectCountBySearch(Map<String, Object> map) throws SQLException {
         StringBuffer sb = new StringBuffer();
         Integer count = 0;
         ResultSet rs = null;
-        Integer size = map1.size();
-        if (size == 0) {
-            String sql = "select count(*) from news";
-            PreparedStatement pstm = this.conn.prepareStatement(sql);
-            rs = pstm.executeQuery();
-            while (rs.next()) {
-                count = rs.getInt(1);
-            }
-        } else {
+        //如果map集合里的参数只有两个，就执行这里的代码，因为我默认没搜索条件
+        if (map.size() == 0) {
             sb.append("select count(*) from news");
-            List list = new ArrayList();
-            for (String key : map1.keySet()) {
-                list.add(map1.get(key));
-                size--;
-                if (size == map1.size() - 1) {
-                    switch (key) {
-                        case "newsTitle":
-                        case "newsAuthor":
-                        case "publishDate":
-                        case "content":
-                            sb.append(" where " + key + " like '%" + map1.get(key) + "%'");
-                            break;
-                        default:
-                            sb.append(" join topic t on news.topicId=t.topicId where t.topicId=" + map1.get("topicId"));
-                            break;
-                    }
-                } else {
-                    switch (key) {
-                        case "newsTitle":
-                        case "newsAuthor":
-                        case "content":
-                        case "publishDate":
-                            sb.append(" and " + key + " like '%" + map1.get(key) + "%' ");
-                            break;
-                        default:
-                        case "topicId":
-                            sb.append(" join topic t on news.topicId=t.topicId where t.topicId=" + map1.get("topicId"));
-                            break;
-                    }
-                }
-            }
             PreparedStatement pstm = this.conn.prepareStatement(sb.toString());
             rs = pstm.executeQuery();
-            while (rs.next()) {
-                count = rs.getInt(1);
+        } else {
+            sb.append("select count(*) from news where");
+            for (String key : map.keySet()) {
+                switch (key) {
+                    case "newsTitle":
+                    case "newsAuthor":
+                    case "content":
+                    case "publishDate":
+                        sb.append(" " + key + " like '%" + map.get(key) + "%' and");
+                        break;
+                    case "topicId":
+                        sb.append(" " + key + "=" + map.get(key) + " and");
+                        break;
+                    default:
+                        break;
+                }
             }
+            sb.delete(sb.lastIndexOf("a"), sb.lastIndexOf("a") + 3);
+            PreparedStatement pstm = this.conn.prepareStatement(sb.toString());
+            rs = pstm.executeQuery();
+        }
+        if (rs.next()) {
+            count = rs.getInt(1);
         }
         return count;
     }

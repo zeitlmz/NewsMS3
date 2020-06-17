@@ -22,6 +22,10 @@ li {
     list-style: none;
 }
 
+#comments {
+    font-size: 15px;
+}
+
 a {
     color: #335884;
     text-decoration: none;
@@ -145,6 +149,7 @@ a:hover {
 .main {
     float: right;
     width: 780px;
+    height: 100%;
 }
 
 .class_type {
@@ -277,6 +282,7 @@ a:hover {
     border: 1px solid #dfdfdf;
     background: url(../images/topbg.gif) repeat-x;
 }
+
 #header_read {
     clear: both;
     position: relative;
@@ -286,7 +292,7 @@ a:hover {
     width: 935px;
     height: 25px;
     line-height: 25px;
-    box-shadow: 0 0 3px rgba(0,0,0,0.3);
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
 }
 
 #top_login {
@@ -363,15 +369,16 @@ a:hover {
 #container {
     clear: both;
     width: 947px;
-    height: 100%;
-    overflow: hidden;
+    height: auto;
     margin: 14px auto;
 }
-#content{
-	width: 100%;
-	height: auto;
-	padding: 20px 50px;
+
+#content {
+    width: 100%;
+    height: auto;
+    padding: 20px 50px;
 }
+
 .sidebar {
     float: left;
     width: 157px;
@@ -390,6 +397,28 @@ a:hover {
 .main {
     float: right;
     width: 787px;
+    height: auto;
+}
+
+#comments {
+    width: 50%;
+    height: 200px;
+    float: left;
+    overflow: hidden;
+    display: inline-block;
+}
+
+#comments:hover {
+    width: 50%;
+    height: 200px;
+    float: left;
+    overflow: scroll;
+    overflow-x: hidden;
+    display: inline-block;
+}
+
+#commform {
+    display: inline-block;
 }
 
 .class_type {
